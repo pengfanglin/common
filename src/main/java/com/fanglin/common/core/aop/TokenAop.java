@@ -9,6 +9,7 @@ import com.fanglin.common.utils.OthersUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +30,7 @@ import java.lang.reflect.Field;
  */
 @Component
 @Aspect()
+@ConditionalOnClass(Aspect.class)
 public class TokenAop {
 
     /**

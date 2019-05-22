@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -31,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Aspect()
+@ConditionalOnClass(Aspect.class)
 public class LocalCacheAop {
     /**
      * 本地缓存仓库
