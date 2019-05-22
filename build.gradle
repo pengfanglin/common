@@ -8,6 +8,9 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
 
+bootJar.enabled=false
+jar.enabled=true
+
 group 'com.fanglin.common'
 version '1.0.0'
 
