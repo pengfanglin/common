@@ -7,6 +7,7 @@ apply from: rootProject.projectDir.path + '/ext.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 bootJar.enabled=false
 jar.enabled=true
