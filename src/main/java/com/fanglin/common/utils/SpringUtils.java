@@ -1,5 +1,6 @@
 package com.fanglin.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/4/3 16:40
  **/
 @Component
+@Slf4j
 public class SpringUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
@@ -22,6 +24,7 @@ public class SpringUtils implements ApplicationContextAware {
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
+        log.info("SpringUtils配置成功");
         SpringUtils.applicationContext = applicationContext;
     }
 

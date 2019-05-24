@@ -37,6 +37,7 @@ public class WxUtils {
     private final static String LANG = "zh_CN";
 
     public WxUtils(WxProperties wxProperties) {
+        log.info("WxUtils配置成功");
         WxUtils.wxProperties = wxProperties;
     }
 

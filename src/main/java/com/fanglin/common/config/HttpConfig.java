@@ -1,6 +1,7 @@
 package com.fanglin.common.config;
 
 import com.fanglin.common.properties.HttpClientProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -27,6 +28,7 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 @ConditionalOnProperty(prefix = "common", name = "http", havingValue = "true")
 @ConditionalOnClass(CloseableHttpClient.class)
+@Slf4j
 public class HttpConfig {
 
     @Autowired
@@ -38,6 +40,7 @@ public class HttpConfig {
     @Bean("httpClient")
     @Primary
     public CloseableHttpClient httpClient() {
+        log.info("httpClient开启成功");
         //指定http-client请求参数
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
             .register("http", PlainConnectionSocketFactory.getSocketFactory())

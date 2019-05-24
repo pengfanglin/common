@@ -5,6 +5,7 @@ import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
 import brave.sampler.CountingSampler;
 import com.fanglin.common.properties.ZipkinProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ConditionalOnProperty(prefix = "common", name = "zipkin", havingValue = "true")
 @ConditionalOnClass({OkHttpSender.class, Tracing.class})
+@Slf4j
 public class ZipkinConfig {
 
     @Autowired
@@ -34,6 +36,7 @@ public class ZipkinConfig {
 
     @Bean
     public Tracing tracing() {
+        log.info("zipkin链路追踪开启成功");
         Sender sender = OkHttpSender.create(zipkinProperties.getAddress());
         //使用异步发送，不影响业务性能
         AsyncReporter<Span> reporter = AsyncReporter.builder(sender)

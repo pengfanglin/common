@@ -55,6 +55,7 @@ public class HttpUtils {
         @Autowired(required = false) CloseableHttpClient wxHttpClient,
         @Autowired(required = false) CloseableHttpClient wxPubHttpClient
     ) {
+        log.info("HttpUtils配置成功");
         HttpUtils.httpClient = httpClient;
         HttpUtils.wxHttpClient = wxHttpClient;
         HttpUtils.wxPubHttpClient = wxPubHttpClient;
@@ -101,8 +102,8 @@ public class HttpUtils {
                 return null;
             }
         } catch (IOException e) {
-            log.error("get请求发送失败:{}",e.getMessage());
-            throw new ValidateException("get请求发送失败:"+e.getMessage());
+            log.error("get请求发送失败:{}", e.getMessage());
+            throw new ValidateException("get请求发送失败:" + e.getMessage());
         } finally {
             if (response != null) {
                 try {
@@ -153,14 +154,14 @@ public class HttpUtils {
             }
             return null;
         } catch (IOException e) {
-            log.error("post请求发送失败:{}",e.getMessage());
-            throw new ValidateException("post请求发送失败:"+e.getMessage());
+            log.error("post请求发送失败:{}", e.getMessage());
+            throw new ValidateException("post请求发送失败:" + e.getMessage());
         } finally {
             if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
-                   log.warn(e.getMessage());
+                    log.warn(e.getMessage());
                 }
             }
         }
@@ -184,6 +185,9 @@ public class HttpUtils {
      * 将url和请求参数编码成字符串
      */
     private static String getUrlWithParams(String url, Map<String, Object> params) {
+        if (params == null || params.isEmpty()) {
+            return url;
+        }
         boolean first = true;
         StringBuilder sb = new StringBuilder(url);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -236,7 +240,7 @@ public class HttpUtils {
             if (statusCode == HttpStatus.SC_OK) {
                 return EntityUtils.toString(res.getEntity());
             } else {
-                log.warn("{} {}",statusCode,res.getEntity());
+                log.warn("{} {}", statusCode, res.getEntity());
                 throw new ValidateException(statusCode + " " + res.getEntity());
             }
         } catch (Exception e) {
@@ -264,7 +268,7 @@ public class HttpUtils {
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(res.getEntity(), "UTF-8");
             } else {
-                log.warn("{} {}",res.getStatusLine().getStatusCode() + EntityUtils.toString(res.getEntity(), "UTF-8"));
+                log.warn("{} {}", res.getStatusLine().getStatusCode() + EntityUtils.toString(res.getEntity(), "UTF-8"));
                 throw new ValidateException(res.getStatusLine().getStatusCode() + " " + EntityUtils.toString(res.getEntity(), "UTF-8"));
             }
         } catch (Exception e) {

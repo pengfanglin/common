@@ -31,6 +31,7 @@ public class SmsUtils {
     private final static String NATION_CODE = "86";
 
     public SmsUtils(SmsProperties smsProperties, ObjectMapper objectMapper) {
+        log.info("SmsUtils配置成功");
         SmsUtils.smsProperties = smsProperties;
         SmsUtils.objectMapper = objectMapper;
     }

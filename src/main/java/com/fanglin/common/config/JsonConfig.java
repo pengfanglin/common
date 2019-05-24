@@ -4,6 +4,7 @@ import com.fanglin.common.core.others.AjaxSerializerModifier;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
  **/
 @Configuration
 @ConditionalOnClass(ObjectMapper.class)
+@Slf4j
 public class JsonConfig {
     /**
      * 基本配置
@@ -48,6 +50,7 @@ public class JsonConfig {
     @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper objectMapper() {
+        log.info("objectMapper成功");
         return baseObjectMapper();
     }
 
@@ -58,6 +61,7 @@ public class JsonConfig {
     @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper ajaxObjectMapper(AjaxSerializerModifier ajaxSerializerModifier) {
+        log.info("ajaxObjectMapper配置成功");
         ObjectMapper objectMapper = baseObjectMapper();
         // 为mapper注册一个带有SerializerModifier的Factory，针对值为null的字段进行特殊处理
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(ajaxSerializerModifier));
@@ -70,6 +74,7 @@ public class JsonConfig {
     @Bean
     @ConditionalOnClass({MappingJackson2HttpMessageConverter.class})
     public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter(AjaxSerializerModifier ajaxSerializerModifier) {
+        log.info("mvc序列化开启成功");
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         //获取springMvc默认的objectMapper
         ObjectMapper objectMapper = converter.getObjectMapper();

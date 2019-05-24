@@ -31,6 +31,7 @@ public class GaoDeUtils {
     private final static String URL = "http://restapi.amap.com/v3/geocode/geo";
 
     public GaoDeUtils(@Autowired(required = false) ObjectMapper objectMapper, GaoDeMapProperties gaoDeMapProperties) {
+        log.info("高德地图配置成功");
         GaoDeUtils.objectMapper = objectMapper;
         GaoDeUtils.gaoDeMapProperties = gaoDeMapProperties;
     }

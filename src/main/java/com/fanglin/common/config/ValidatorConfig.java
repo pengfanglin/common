@@ -1,5 +1,6 @@
 package com.fanglin.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,11 @@ import javax.validation.ValidatorFactory;
  **/
 @Configuration
 @ConditionalOnClass(HibernateValidator.class)
+@Slf4j
 public class ValidatorConfig {
     @Bean
     Validator validator() {
+        log.info("hivernateValidator参数校验配置成功");
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
             .configure()
             .failFast(true)

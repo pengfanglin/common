@@ -1,6 +1,7 @@
 package com.fanglin.common.config;
 
 import com.fanglin.common.core.filter.RequestLogFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -18,6 +19,7 @@ import javax.servlet.Filter;
  **/
 @Configuration
 @ConditionalOnClass({Filter.class, FilterRegistrationBean.class})
+@Slf4j
 public class FilterConfig {
 
     /**
@@ -25,8 +27,9 @@ public class FilterConfig {
      */
     @Bean
     @SuppressWarnings({"rawtypes", "unchecked"})
-    @ConditionalOnProperty(prefix = "common", name = "requestLog", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "common", name = "requestLog", havingValue = "true")
     public FilterRegistrationBean filterRegister() {
+        log.info("请求日志打印开启成功");
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new RequestLogFilter());
         filterRegistrationBean.addUrlPatterns("/*");
