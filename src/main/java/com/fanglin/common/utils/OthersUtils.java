@@ -31,6 +31,39 @@ import java.util.*;
 public class OthersUtils {
 
     /**
+     * 对象序列化为二进制
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] objectToByte(Object data) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            new ObjectOutputStream(os).writeObject(data);
+        } catch (IOException e) {
+            log.error("序列化异常:{}", e.getMessage());
+            throw new ValidateException("序列化异常:" + e.getMessage());
+        }
+        return os.toByteArray();
+    }
+
+    /**
+     * 二进制序列化为对象
+     *
+     * @param data
+     * @return
+     */
+    public static Object byteToObject(byte[] data) {
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        try {
+            return new ObjectInputStream(is).readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("反序列化异常:{}", e.getMessage());
+            throw new ValidateException("反序列化异常:" + e.getMessage());
+        }
+    }
+
+    /**
      * 向html文件中写入内容
      */
     public static boolean writeHtml(String fileName, String desc, String htmlStyle) {

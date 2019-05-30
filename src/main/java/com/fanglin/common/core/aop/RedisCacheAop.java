@@ -1,10 +1,8 @@
 package com.fanglin.common.core.aop;
 
-import com.fanglin.common.annotation.LocalCache;
-import com.fanglin.common.annotation.LocalCacheRemove;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fanglin.common.annotation.RedisCache;
+import com.fanglin.common.annotation.RedisCacheRemove;
+import com.fanglin.common.utils.OthersUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -12,6 +10,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -19,58 +19,61 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 本地缓存切面类，首先从缓存中取数据，数据存在返回缓存数据，否则去数据库取
+ * redis缓存切面类，首先从缓存中取数据，数据存在返回缓存数据，否则去数据库取
  *
- * @author 方林
- */
+ * @author 彭方林
+ * @version 1.0
+ * @date 2019/5/30 17:40
+ **/
 @Component
 @Aspect()
-public class LocalCacheAop {
-    /**
-     * 本地缓存仓库
-     */
-    private static Map<String, CacheData> cache = new ConcurrentHashMap<>();
+@ConditionalOnClass(Aspect.class)
+public class RedisCacheAop {
+
+    @Autowired
+    JedisPool jedisPool;
 
     /**
-     * LocalCache切入点规则
+     * redisCache切入点规则
      */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.LocalCache)")
-    public void pointLocalCache() {
+    @Pointcut(value = "@annotation(com.fanglin.common.annotation.RedisCache)")
+    public void pointRedisCache() {
 
     }
 
     /**
-     * LocalCacheRemove切入点规则
+     * redisCacheRemove切入点规则
      */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.LocalCacheRemove)")
-    public void pointLocalCacheRemove() {
+    @Pointcut(value = "@annotation(com.fanglin.common.annotation.RedisCacheRemove)")
+    public void pointRedisCacheRemove() {
 
     }
 
     /**
      * 切入的验证代码
      */
-    @Around(value = "pointLocalCache()")
+    @Around(value = "pointRedisCache()")
     public Object localCacheAop(ProceedingJoinPoint point) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) point.getSignature();
         Method method = joinPointObject.getMethod();
-        LocalCache localCache = method.getAnnotation(LocalCache.class);
-        long timeout = localCache.timeout();
-        String key = getCacheKey(method, point.getArgs(), localCache.value());
-        CacheData cacheData = cache.get(key);
+        RedisCache redisCache = method.getAnnotation(RedisCache.class);
+        String key = getCacheKey(method, point.getArgs(), redisCache.value());
+        long timeout = redisCache.timeout();
+        Jedis jedis = jedisPool.getResource();
+        byte[] cacheData = jedis.get(key.getBytes());
+        Object data;
         //本地缓存为空时或者用户设置了超时时间并且已经超时，需要重新加载数据
-        boolean reload = cacheData == null || (cacheData.getOverdueTime() != -1 && cacheData.getOverdueTime() < System.currentTimeMillis());
-        if (reload) {
-            Object result = point.proceed();
-            if (result != null || localCache.cacheNull()) {
+        if (cacheData == null) {
+            data = point.proceed();
+            if (data != null || redisCache.cacheNull()) {
                 if (timeout != -1) {
-                    switch (localCache.unit()) {
+                    switch (redisCache.unit()) {
                         case DAYS:
                             timeout = timeout * 24 * 3600 * 1000;
                             break;
@@ -86,27 +89,30 @@ public class LocalCacheAop {
                         case MILLISECONDS:
                             break;
                         default:
+                            jedis.close();
                             throw new RuntimeException("不支持的时间单位");
 
                     }
                 }
-                cacheData = new CacheData(result, timeout == -1 ? -1 : System.currentTimeMillis() + timeout);
-                cache.put(key, cacheData);
+                jedis.set(key.getBytes(), OthersUtils.objectToByte(data), "px".getBytes(), timeout);
             }
+        } else {
+            data = OthersUtils.byteToObject(cacheData);
         }
-        return cacheData == null ? null : cacheData.getData();
+        return data;
     }
 
     /**
      * 切入的验证代码
      */
-    @AfterReturning(value = "pointLocalCacheRemove()")
+    @AfterReturning(value = "pointRedisCacheRemove()")
     public void localCacheRemoveAop(JoinPoint point) {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        LocalCacheRemove localCacheRemove = method.getAnnotation(LocalCacheRemove.class);
-        String key = getCacheKey(method, point.getArgs(), localCacheRemove.value());
-        cache.remove(key);
+        RedisCacheRemove redisCacheRemove = method.getAnnotation(RedisCacheRemove.class);
+        String key = getCacheKey(method, point.getArgs(), redisCacheRemove.value());
+        Jedis jedis = jedisPool.getResource();
+        jedis.del(key);
     }
 
     /**
@@ -136,14 +142,6 @@ public class LocalCacheAop {
         } catch (Exception e) {
             return key;
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    class CacheData {
-        private Object data;
-        private long overdueTime;
     }
 }
 
