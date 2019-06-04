@@ -146,7 +146,7 @@ public class PushUtils {
         optionsObjectNode.put("apns_production", jAuroraPushProperties.isProduction());
         pushObjectNode.set("options", optionsObjectNode);
         try {
-            String result = HttpUtils.postByJson(PUSH_URL, headers, pushObjectNode.toString());
+            String result = HttpUtils.postByJson(PUSH_URL,null, headers, pushObjectNode.toString());
             JsonNode jsonNode = objectMapper.readTree(result);
             return !OthersUtils.isEmpty(jsonNode.get("msg_id"));
         } catch (Exception e) {
