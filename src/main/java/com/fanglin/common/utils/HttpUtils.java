@@ -215,14 +215,21 @@ public class HttpUtils {
      * post方式发送json请求
      */
     public static String postByJson(String url, String json) {
-        return postByJson(url, null, json);
+        return postByJson(url, null, null, json);
     }
 
     /**
      * post方式发送json请求
      */
-    public static String postByJson(String url, Map<String, String> headers, String json) {
-        HttpPost post = new HttpPost(url);
+    public static String postByJson(String url, Map<String, Object> params, String json) {
+        return postByJson(url, params, null, json);
+    }
+
+    /**
+     * post方式发送json请求
+     */
+    public static String postByJson(String url, Map<String, Object> params, Map<String, String> headers, String json) {
+        HttpPost post = new HttpPost(getUrlWithParams(url, params));
         try {
             StringEntity s = new StringEntity(json, "UTF-8");
             //配置请求headers
