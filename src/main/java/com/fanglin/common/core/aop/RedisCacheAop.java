@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
 @ConditionalOnClass({Aspect.class,JedisPool.class})
 public class RedisCacheAop {
 
-    @Autowired
+    @Autowired(required = false)
     JedisPool jedisPool;
 
     /**
