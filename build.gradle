@@ -9,8 +9,8 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-bootJar.enabled=false
-jar.enabled=true
+bootJar.enabled = false
+jar.enabled = true
 
 group 'com.fanglin.common'
 version '1.0.0'
@@ -33,12 +33,13 @@ repositories {
 dependencies {
     compileOnly fileTree(dir: 'lib', includes: ['*jar'])
     annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     compileOnly(
             "org.projectlombok:lombok",
     )
     compile("io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkinSenderOkhttp3Version}")
-    compile("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}"){
+    compile("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}") {
         exclude module: 'dubbo'
     }
     compile("org.apache.poi:poi:${poiVersion}")
@@ -47,7 +48,7 @@ dependencies {
     compile("org.apache.httpcomponents:httpclient")
     compile("redis.clients:jedis:${jedisVersion}")
     compile("org.springframework.boot:spring-boot-starter-aop")
-    compile("org.springframework.boot:spring-boot-starter-data-redis"){
+    compile("org.springframework.boot:spring-boot-starter-data-redis") {
         exclude module: 'lettuce-core'
     }
     compile("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
