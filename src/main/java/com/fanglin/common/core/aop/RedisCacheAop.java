@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  **/
 @Component
 @Aspect()
-@ConditionalOnClass(Aspect.class)
+@ConditionalOnClass({Aspect.class,JedisPool.class})
 public class RedisCacheAop {
 
     @Autowired
