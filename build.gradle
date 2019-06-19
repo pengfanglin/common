@@ -59,3 +59,10 @@ dependencies {
     compile("org.hibernate.validator:hibernate-validator")
     compile("org.glassfish:javax.el")
 }
+publishing {
+    publications {
+        myPublish(MavenPublication) {
+            from components.java
+        }
+    }
+}
