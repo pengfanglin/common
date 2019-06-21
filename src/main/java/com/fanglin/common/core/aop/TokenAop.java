@@ -77,7 +77,7 @@ public class TokenAop {
         if (pass) {
             return point.proceed();
         } else {
-            return Ajax.status(false,401,"未授权，请登录");
+            return Ajax.status(401,"未授权，请登录");
         }
     }
 
