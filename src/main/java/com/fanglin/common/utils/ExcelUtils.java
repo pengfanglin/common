@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,7 +132,7 @@ public class ExcelUtils {
                 //创建一个新的行
                 HSSFRow row = sheet.createRow(i + 1);
                 //循环通过反射，为每一列赋值
-                for (int j = 0; j < data.size(); j++) {
+                for (int j = 0; j < excels.size(); j++) {
                     Field field = data.get(i).getClass().getDeclaredField(excels.get(j).getKey());
                     if (field != null) {
                         field.setAccessible(true);
@@ -148,7 +149,7 @@ public class ExcelUtils {
                 fileName = OthersUtils.createRandom(10) + "xls";
             }
             response.setContentType("application/x-msdownload;");
-            response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+            response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName,"UTF-8"));
             wb.write(response.getOutputStream());
         } catch (Exception e) {
             log.warn("excel导出失败:{}", e.getMessage());
