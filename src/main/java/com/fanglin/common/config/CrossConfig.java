@@ -33,7 +33,7 @@ public class CrossConfig {
         // 允许提交请求的方法，*表示全部允许，也可以单独设置GET、PUT等
         config.addAllowedMethod("*");
         //允许返回的请求头
-        config.addExposedHeader("*");
+        config.addExposedHeader("content-disposition");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
