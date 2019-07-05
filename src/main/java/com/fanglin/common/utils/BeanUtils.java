@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -34,7 +34,7 @@ public class BeanUtils {
             return targetObject;
         } catch (InstantiationException | IllegalAccessException e) {
             log.warn("参数复制失败,源对象:{} 目标对象:{} 错误信息:{}", source.getClass(), target, e.getMessage());
-            throw new ValidateException("参数复制失败");
+            throw new BusinessException("参数复制失败");
         }
     }
 
@@ -55,7 +55,7 @@ public class BeanUtils {
             return list;
         } catch (InstantiationException | IllegalAccessException e) {
             log.warn("参数复制失败,源对象:{} 目标对象:{} 错误信息:{}", source.getClass(), targetClass, e.getMessage());
-            throw new ValidateException("参数复制失败");
+            throw new BusinessException("参数复制失败");
         }
     }
 
@@ -93,7 +93,7 @@ public class BeanUtils {
             return target;
         } catch (InstantiationException | IllegalAccessException e) {
             log.warn("参数复制失败,源对象:{} 目标对象:{} 错误信息:{}", source.getClass(), targetClass, e.getMessage());
-            throw new ValidateException("参数复制失败");
+            throw new BusinessException("参数复制失败");
         }
     }
 
@@ -116,7 +116,7 @@ public class BeanUtils {
             return target;
         } catch (IllegalAccessException e) {
             log.warn("参数复制失败,源对象:{} 目标对象:{} 错误信息:{}", source.getClass(), e.getMessage());
-            throw new ValidateException("参数复制失败");
+            throw new BusinessException("参数复制失败");
         }
     }
 }

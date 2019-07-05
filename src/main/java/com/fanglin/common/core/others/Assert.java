@@ -14,44 +14,44 @@ public class Assert {
 
     public static void notNull(Object object, String errorMsg) {
         if (object == null) {
-            throw new ValidateException(errorMsg);
+            throw new BusinessException(errorMsg);
         }
     }
 
 
     public static void notEmpty(String text, String errorMsg) {
         if (text == null || text.length() == 0) {
-            throw new ValidateException(errorMsg);
+            throw new BusinessException(errorMsg);
         }
     }
 
     public static void notEmpty(Object[] array, String errorMsg) {
         if (array == null || array.length == 0) {
-            throw new ValidateException(errorMsg);
+            throw new BusinessException(errorMsg);
         }
     }
 
     public static void notEmpty(Collection<?> collection, String errorMsg) {
         if (collection == null || collection.isEmpty()) {
-            throw new ValidateException(errorMsg);
+            throw new BusinessException(errorMsg);
         }
     }
 
     public static void notEmpty(Map map, String errorMsg) {
         if (map == null || map.isEmpty()) {
-            throw new ValidateException(errorMsg);
+            throw new BusinessException(errorMsg);
         }
     }
 
     public static void isTrue(boolean condition, String message) {
         if (!condition) {
-            throw new ValidateException(message);
+            throw new BusinessException(message);
         }
     }
 
     public static void isFalse(boolean condition, String message) {
         if (condition) {
-            throw new ValidateException(message);
+            throw new BusinessException(message);
         }
     }
 }

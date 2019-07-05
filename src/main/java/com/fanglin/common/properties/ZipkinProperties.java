@@ -6,8 +6,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * zipkin配置文件
+ *
  * @author fanglin
  * @version 1.0
  * @date 2019/4/2 10:59
@@ -21,7 +25,11 @@ public class ZipkinProperties {
     /**
      * 服务名
      */
-    private String serviceName="zipkin";
+    private String serviceName = "zipkin";
+    /**
+     * 服务名
+     */
+    private List<String> fieldNames = Collections.singletonList("zipkin");
     /**
      * zipkin服务器地址
      */
@@ -29,13 +37,13 @@ public class ZipkinProperties {
     /**
      * 连接超时：毫秒
      */
-    private long connectTimeout=3000;
+    private long connectTimeout = 3000;
     /**
      * 数据发送超时：毫秒
      */
-    private long readTimeout=5000;
+    private long readTimeout = 5000;
     /**
      * 采样率：0.01-1
      */
-    private float samplingRate=1;
+    private float samplingRate = 1;
 }

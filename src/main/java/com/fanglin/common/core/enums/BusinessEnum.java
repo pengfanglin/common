@@ -13,7 +13,7 @@ public enum BusinessEnum {
     /**
      * 默认异常
      */
-    DEFAULT(0, "异常");
+    DEFAULT(400, "异常");
 
     @Getter
     private int code;

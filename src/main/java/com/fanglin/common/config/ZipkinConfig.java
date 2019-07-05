@@ -36,7 +36,7 @@ public class ZipkinConfig {
 
     @Bean
     public Tracing tracing() {
-        log.info("zipkin链路追踪开启成功");
+        log.info("zipkin链路追踪配置成功,参数:{}", zipkinProperties);
         Sender sender = OkHttpSender.create(zipkinProperties.getAddress());
         //使用异步发送，不影响业务性能
         AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
@@ -47,7 +47,7 @@ public class ZipkinConfig {
             .build();
         return Tracing.newBuilder()
             .localServiceName(zipkinProperties.getServiceName())
-            .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, "user-name"))
+            .propagationFactory(ExtraFieldPropagation.newFactory(B3Propagation.FACTORY, zipkinProperties.getFieldNames()))
             //指定采样率 Sampler.ALWAYS_SAMPLE:总是采样 Sampler.NEVER_SAMPLE:总是不采样 CountingSampler指定采样率
             .sampler(CountingSampler.create(zipkinProperties.getSamplingRate()))
             .spanReporter(reporter)

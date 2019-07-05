@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
@@ -39,7 +39,7 @@ public class EncodeUtils {
             return new String(Base64.encodeBase64(cipher.doFinal(content.getBytes())));
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException("加密出错");
+            throw new BusinessException("加密出错");
         }
     }
 
@@ -61,7 +61,7 @@ public class EncodeUtils {
             return new String(cipher.doFinal(Base64.decodeBase64(content.getBytes(StandardCharsets.UTF_8))));
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException("解密出错");
+            throw new BusinessException("解密出错");
         }
     }
 
@@ -80,7 +80,7 @@ public class EncodeUtils {
             secretBytes = md.digest();
         } catch (NoSuchAlgorithmException e) {
             log.warn(e.getMessage());
-            throw new ValidateException("没有md5这个算法！");
+            throw new BusinessException("没有md5这个算法！");
         }
         //将加密后的数据转换为16进制数字
         StringBuilder md5code = new StringBuilder(new BigInteger(1, secretBytes).toString(16));
@@ -121,7 +121,7 @@ public class EncodeUtils {
             md = MessageDigest.getInstance("SHA1");
         } catch (NoSuchAlgorithmException e) {
             log.warn(e.getMessage());
-            throw new ValidateException("哈希值校验失败");
+            throw new BusinessException("哈希值校验失败");
         }
         md.update(data.getBytes());
         StringBuilder buf = new StringBuilder();

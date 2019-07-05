@@ -23,7 +23,7 @@ import javax.validation.ValidatorFactory;
 public class ValidatorConfig {
     @Bean
     Validator validator() {
-        log.info("hivernateValidator参数校验配置成功");
+        log.info("HibernateValidator参数校验配置成功");
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
             .configure()
             .failFast(true)

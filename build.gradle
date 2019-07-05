@@ -4,7 +4,7 @@ plugins {
 }
 
 apply from: rootProject.projectDir.path + '/ext.gradle'
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -31,37 +31,37 @@ repositories {
 }
 
 dependencies {
-    compileOnly fileTree(dir: 'lib', includes: ['*jar'])
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testAnnotationProcessor "org.projectlombok:lombok"
+    testAnnotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    testCompileOnly("org.projectlombok:lombok")
+    api("org.projectlombok:lombok")
 
-    compileOnly(
-            "org.projectlombok:lombok",
-    )
-    compile("io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkinSenderOkhttp3Version}")
-    compile("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}") {
+    implementation("io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkinSenderOkhttp3Version}")
+    implementation("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}") {
         exclude module: 'dubbo'
     }
-    compile("org.apache.poi:poi:${poiVersion}")
-    compile("org.apache.poi:poi-ooxml:${poiVersion}")
-    compile("com.google.zxing:javase:${javaseVersion}")
-    compile("org.apache.httpcomponents:httpclient")
-    compile("redis.clients:jedis:${jedisVersion}")
-    compile("org.springframework.boot:spring-boot-starter-aop")
-    compile("org.springframework.boot:spring-boot-starter-data-redis") {
+    implementation("org.apache.poi:poi:${poiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
+    implementation("com.google.zxing:javase:${javaseVersion}")
+    implementation("org.apache.httpcomponents:httpclient")
+    implementation("redis.clients:jedis:${jedisVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis") {
         exclude module: 'lettuce-core'
     }
-    compile("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
-    compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
-    compile("javax.servlet:javax.servlet-api")
-    compile("com.fasterxml.jackson.core:jackson-databind")
-    compile("org.springframework:spring-web")
-    compile("org.hibernate.validator:hibernate-validator")
-    compile("org.glassfish:javax.el")
+    implementation("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
+    implementation("javax.servlet:javax.servlet-api")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.springframework:spring-web")
+    implementation("org.hibernate.validator:hibernate-validator")
+    implementation("org.glassfish:javax.el")
 }
 publishing {
     publications {
-        myPublish(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
         }
     }

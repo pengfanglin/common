@@ -2,14 +2,12 @@ package com.fanglin.common.utils;
 
 
 import com.fanglin.common.core.others.Excel;
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -60,7 +58,7 @@ public class ExcelUtils {
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException("excel读取失败:" + e.getMessage());
+            throw new BusinessException("excel读取失败:" + e.getMessage());
         }
         return mapList;
     }
@@ -153,7 +151,7 @@ public class ExcelUtils {
             wb.write(response.getOutputStream());
         } catch (Exception e) {
             log.warn("excel导出失败:{}", e.getMessage());
-            throw new ValidateException("excel导出失败");
+            throw new BusinessException("excel导出失败");
         }
     }
 }

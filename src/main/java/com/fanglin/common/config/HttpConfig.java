@@ -40,7 +40,7 @@ public class HttpConfig {
     @Bean("httpClient")
     @Primary
     public CloseableHttpClient httpClient() {
-        log.info("httpClient开启成功");
+        log.info("httpClient配置成功,参数:{}", httpClientProperties);
         //指定http-client请求参数
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
             .register("http", PlainConnectionSocketFactory.getSocketFactory())

@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.properties.SmsProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,10 +44,10 @@ public class SmsUtils {
      */
     private static void validate(String phone, String content) {
         if (OthersUtils.isEmpty(phone)) {
-            throw new ValidateException("手机号不能为空");
+            throw new BusinessException("手机号不能为空");
         }
         if (OthersUtils.isEmpty(content)) {
-            throw new ValidateException("短信内容不能为空");
+            throw new BusinessException("短信内容不能为空");
         }
     }
 
@@ -74,18 +74,18 @@ public class SmsUtils {
             switch (ret.split(",")[0]) {
                 case "-1":
                     log.warn(ret);
-                    throw new ValidateException("用户名或者密码不正确或用户禁用或者是管理账户");
+                    throw new BusinessException("用户名或者密码不正确或用户禁用或者是管理账户");
                 case "1":
                     return true;
                 case "0":
                     log.warn(ret);
-                    throw new ValidateException("发送短信失败");
+                    throw new BusinessException("发送短信失败");
                 default:
                     return false;
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException("短信发送失败:" + e.getMessage());
+            throw new BusinessException("短信发送失败:" + e.getMessage());
         }
     }
 
@@ -100,13 +100,13 @@ public class SmsUtils {
      */
     public static String ali(String phone, String signName, String templateCode, String templateParam) {
         if (OthersUtils.isEmpty(phone)) {
-            throw new ValidateException("手机号不能为空");
+            throw new BusinessException("手机号不能为空");
         }
         if (OthersUtils.isEmpty(signName)) {
-            throw new ValidateException("短信签名名称不能为空");
+            throw new BusinessException("短信签名名称不能为空");
         }
         if (OthersUtils.isEmpty(templateCode)) {
-            throw new ValidateException("短信模板ID不能为空");
+            throw new BusinessException("短信模板ID不能为空");
         }
         try {
             Map<String, Object> params = new HashMap<>(10);
@@ -124,11 +124,11 @@ public class SmsUtils {
                 return jsonNode.findValue("BizId").textValue();
             } else {
                 log.warn("短信发送失败:" + jsonNode.findValue("Message").textValue());
-                throw new ValidateException("短信发送失败:" + jsonNode.findValue("Message").textValue());
+                throw new BusinessException("短信发送失败:" + jsonNode.findValue("Message").textValue());
             }
         } catch (Exception e) {
             log.warn("短信发送失败:{}", e.getMessage());
-            throw new ValidateException("短信发送失败:" + e.getMessage());
+            throw new BusinessException("短信发送失败:" + e.getMessage());
         }
     }
 
@@ -143,10 +143,10 @@ public class SmsUtils {
      */
     public static String tengXun(String phone, String signName, String templateId, String[] templateParams) {
         if (OthersUtils.isEmpty(phone)) {
-            throw new ValidateException("手机号不能为空");
+            throw new BusinessException("手机号不能为空");
         }
         if (OthersUtils.isEmpty(templateId)) {
-            throw new ValidateException("短信模板ID不能为空");
+            throw new BusinessException("短信模板ID不能为空");
         }
         String random = OthersUtils.createRandom(6);
         long time = System.currentTimeMillis() / 1000;
@@ -184,11 +184,11 @@ public class SmsUtils {
                 return jsonNode.findValue("sid").textValue();
             } else {
                 log.warn("短信发送失败:{}", jsonNode.findValue("errmsg").textValue());
-                throw new ValidateException("短信发送失败:" + jsonNode.findValue("errmsg").textValue());
+                throw new BusinessException("短信发送失败:" + jsonNode.findValue("errmsg").textValue());
             }
         } catch (Exception e) {
             log.warn("短信发送失败:{}", e.getMessage());
-            throw new ValidateException("短信发送失败:" + e.getMessage());
+            throw new BusinessException("短信发送失败:" + e.getMessage());
         }
     }
 }

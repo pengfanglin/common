@@ -1,13 +1,12 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -36,7 +35,7 @@ public class QrCodeUtils {
 			boolean success = dirPath.mkdirs();
 			if (!success) {
 				log.warn("创建目录失败 {}",dirPath.getPath());
-				throw new ValidateException("创建目录失败");
+				throw new BusinessException("创建目录失败");
 			}
 		}
 		int width = 200;
@@ -51,7 +50,7 @@ public class QrCodeUtils {
 			MatrixToImageWriter.writeToPath(bitMatrix, "png", path);
 		} catch (WriterException | IOException e) {
 			log.warn("二维码生成失败:{}",e.getMessage());
-			throw new ValidateException("二维码生成失败");
+			throw new BusinessException("二维码生成失败");
 		}
 	}
 
@@ -72,7 +71,7 @@ public class QrCodeUtils {
 			return result.getText();
 		} catch (IOException | NotFoundException e) {
 			log.warn(e.getMessage());
-			throw new ValidateException("文件不存在");
+			throw new BusinessException("文件不存在");
 		}
 	}
 }

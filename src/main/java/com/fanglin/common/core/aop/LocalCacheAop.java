@@ -13,12 +13,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -33,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Aspect()
 @ConditionalOnClass(Aspect.class)
-public class LocalCacheAop {
+public class LocalCacheAop extends CacheAop {
     /**
      * 本地缓存仓库
      */
@@ -111,34 +105,6 @@ public class LocalCacheAop {
         cache.remove(key);
     }
 
-    /**
-     * 解析el表达式生成缓存的key
-     *
-     * @param args 目标方法参数
-     * @param key  表达式
-     * @return
-     */
-    private String getCacheKey(Method method, Object[] args, String key) {
-        //创建SpringEL表达式转换器
-        ExpressionParser parser = new SpelExpressionParser();
-        //Spring
-        EvaluationContext context = new StandardEvaluationContext();
-        //获取目标方法参数名
-        String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
-        if (paramNames == null) {
-            return key;
-        }
-        for (int i = 0; i < args.length; i++) {
-            context.setVariable(paramNames[i], args[i]);
-        }
-        try {
-            Expression expression = parser.parseExpression(key);
-            Object value = expression.getValue(context);
-            return value == null || "".equals(value) ? key : value.toString();
-        } catch (Exception e) {
-            return key;
-        }
-    }
 
     @Data
     @AllArgsConstructor

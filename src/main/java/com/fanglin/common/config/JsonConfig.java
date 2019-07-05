@@ -9,9 +9,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import java.text.SimpleDateFormat;
 
 /**
  * JSON相关的配置
@@ -50,18 +47,18 @@ public class JsonConfig {
     @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper objectMapper() {
-        log.info("objectMapper成功");
+        log.info("ObjectMapper配置成功");
         return baseObjectMapper();
     }
 
     /**
-     * jackson对象声明
+     * 空值处理的jackson对象声明
      */
     @Bean("ajaxObjectMapper")
-    @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "common", name = "ajax-jackson", havingValue = "true")
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper ajaxObjectMapper(AjaxSerializerModifier ajaxSerializerModifier) {
-        log.info("ajaxObjectMapper配置成功");
+        log.info("AjaxObjectMapper配置成功");
         ObjectMapper objectMapper = baseObjectMapper();
         // 为mapper注册一个带有SerializerModifier的Factory，针对值为null的字段进行特殊处理
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(ajaxSerializerModifier));

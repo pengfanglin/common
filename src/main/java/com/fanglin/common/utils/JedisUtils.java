@@ -22,7 +22,11 @@ public class JedisUtils {
     private static JedisPool jedisPool;
 
     public JedisUtils(@Autowired(required = false) JedisPool jedisPool) {
-        log.info("JedisUtils配置成功");
+        if (jedisPool == null) {
+            log.warn("未配置JedisPool,JedisUtils不可用");
+        } else {
+            log.info("JedisUtils配置成功");
+        }
         JedisUtils.jedisPool = jedisPool;
     }
 
@@ -36,36 +40,84 @@ public class JedisUtils {
     }
 
     public static String set(String key, String value, String nxxx, String expx, long timeout) {
+        log.debug("{} {} {} {} {}", key, value, nxxx, expx, timeout);
         Jedis jedis = jedisPool.getResource();
         String result = jedis.set(key, value, nxxx, expx, timeout);
+        log.debug(result);
         jedis.close();
         return result;
     }
 
+    public static String setNx(String key, String value, String expx, long timeout) {
+        return set(key, value, "nx", expx, timeout);
+    }
+
+    public static String setXx(String key, String value, String expx, long timeout) {
+        return set(key, value, "xx", expx, timeout);
+    }
+
     public static String set(String key, String value) {
+        log.debug("{} {}", key, value);
         Jedis jedis = jedisPool.getResource();
         String result = jedis.set(key, value);
+        log.debug(result);
         jedis.close();
         return result;
     }
 
     public static String set(String key, String value, String expx, long timeout) {
+        log.debug("{} {} {} {}", key, value, expx, timeout);
         Jedis jedis = jedisPool.getResource();
         String result = jedis.set(key, value, expx, timeout);
+        log.debug(result);
         jedis.close();
         return result;
     }
 
-    public static String set(String key, String value, String nxxx) {
+    public static String setNx(String key, String value) {
+        log.debug("{} {}", key, value);
         Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value, nxxx);
+        String result = jedis.set(key, value, "nx");
+        log.debug(result);
         jedis.close();
         return result;
     }
 
+    public static String setXx(String key, String value) {
+        log.debug("{} {}", key, value);
+        Jedis jedis = jedisPool.getResource();
+        String result = jedis.set(key, value, "xx");
+        log.debug(result);
+        jedis.close();
+        return result;
+    }
+
+    /**
+     * 根据key读取
+     *
+     * @param key
+     * @return
+     */
     public static String get(String key) {
+        log.debug(key);
         Jedis jedis = jedisPool.getResource();
         String result = jedis.get(key);
+        log.debug(result);
+        jedis.close();
+        return result;
+    }
+
+    /**
+     * 删除key
+     *
+     * @param key
+     * @return
+     */
+    public static Long del(String key) {
+        log.debug(key);
+        Jedis jedis = jedisPool.getResource();
+        Long result = jedis.del(key);
+        log.debug("{}", result);
         jedis.close();
         return result;
     }

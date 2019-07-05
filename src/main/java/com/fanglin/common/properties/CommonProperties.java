@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * common包配置信息
+ *
  * @author 彭方林
- * @date 2019/4/2 14:08
  * @version 1.0
+ * @date 2019/4/2 14:08
  **/
 @Data
 @NoArgsConstructor
@@ -19,25 +20,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonProperties {
     /**
-     * 请求日志 默认开启
+     * 请求日志
      */
-    private boolean requestLog=false;
+    private boolean requestLog = false;
     /**
      * redis自动配置 默认关闭
      */
-    private boolean redis=false;
+    private boolean redis = false;
     /**
      * jedis自动配置 默认关闭
      */
-    private boolean jedis=false;
+    private boolean jedis = false;
     /**
      * zipkin自动配置 默认关闭
      */
-    private boolean zipkin=false;
+    private boolean zipkin = false;
     /**
      * httpClient自动配置 默认开启
      */
-    private boolean http=false;
+    private boolean http = false;
+    /**
+     * httpClient自动配置 默认开启
+     */
+    private boolean jackson = true;
+    /**
+     * httpClient自动配置 默认开启
+     */
+    private boolean ajaxJackson = true;
     /**
      * 静态文件保存目录
      */

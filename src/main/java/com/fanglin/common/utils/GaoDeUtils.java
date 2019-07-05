@@ -2,12 +2,11 @@ package com.fanglin.common.utils;
 
 
 import com.fanglin.common.core.others.Location;
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.properties.GaoDeMapProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
@@ -55,7 +54,7 @@ public class GaoDeUtils {
             }
         } catch (Exception e) {
             log.warn("地址转换经纬度失败:{}", e.getMessage());
-            throw new ValidateException("地址转换经纬度失败:" + e.getMessage());
+            throw new BusinessException("地址转换经纬度失败:" + e.getMessage());
         }
         return locationBean;
     }

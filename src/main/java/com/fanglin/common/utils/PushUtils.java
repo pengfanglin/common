@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.properties.AuroraPushProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -151,7 +151,7 @@ public class PushUtils {
             return !OthersUtils.isEmpty(jsonNode.get("msg_id"));
         } catch (Exception e) {
             log.warn("消息推送失败:{}", e.getMessage());
-            throw new ValidateException("消息推送失败:" + e.getMessage());
+            throw new BusinessException("消息推送失败:" + e.getMessage());
         }
     }
 }

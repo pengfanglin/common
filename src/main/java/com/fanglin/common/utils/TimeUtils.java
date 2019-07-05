@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
@@ -37,7 +37,7 @@ public class TimeUtils {
             return threadLocal.get().parse(dateStr);
         } catch (ParseException e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class TimeUtils {
     public static int getAge(Date date) {
         Calendar cal = Calendar.getInstance();
         if (cal.before(date)) {
-            throw new ValidateException("生日大于当前时间，不合法!");
+            throw new BusinessException("生日大于当前时间，不合法!");
         }
         int yearNow = cal.get(Calendar.YEAR);
         int monthNow = cal.get(Calendar.MONTH);

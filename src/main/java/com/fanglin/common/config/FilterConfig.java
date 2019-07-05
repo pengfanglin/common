@@ -26,11 +26,10 @@ public class FilterConfig {
      * 打印请求日志
      */
     @Bean
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @ConditionalOnProperty(prefix = "common", name = "requestLog", havingValue = "true")
+    @ConditionalOnProperty(prefix = "common", name = "request-log", havingValue = "true")
     public FilterRegistrationBean filterRegister() {
         log.info("请求日志打印开启成功");
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        FilterRegistrationBean<RequestLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new RequestLogFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;

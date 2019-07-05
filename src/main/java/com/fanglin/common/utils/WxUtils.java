@@ -1,10 +1,9 @@
 package com.fanglin.common.utils;
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.core.others.Wx;
 import com.fanglin.common.properties.WxProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -61,7 +60,7 @@ public class WxUtils {
                 jedis.set("wx_access_token", jsApiTicket, "NX", "EX", 7000);
             } else {
                 log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-                throw new ValidateException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
             }
         }
         jedis.close();
@@ -88,7 +87,7 @@ public class WxUtils {
                 jedis.set("wx_access_token", accessToken, "NX", "EX", 7000);
             } else {
                 log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-                throw new ValidateException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
             }
         }
         jedis.close();
@@ -130,7 +129,7 @@ public class WxUtils {
             return wx;
         } else {
             log.warn("用户信息获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-            throw new ValidateException("用户信息获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+            throw new BusinessException("用户信息获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
         }
     }
 
@@ -154,7 +153,7 @@ public class WxUtils {
             wx.setUrl(URLDecoder.decode(url, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             log.warn("url解码失败:{}", e.getMessage());
-            throw new ValidateException("url解码失败:" + e.getMessage());
+            throw new BusinessException("url解码失败:" + e.getMessage());
         }
         String sign = "jsapi_ticket=" + jsApiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + url;
         wx.setSignature(EncodeUtils.sha1(sign));

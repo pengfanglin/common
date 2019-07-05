@@ -1,7 +1,7 @@
 package com.fanglin.common.utils;
 
 
-import com.fanglin.common.core.others.ValidateException;
+import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class ValidatorUtils {
         Set<ConstraintViolation<Object>> results = validator.validate(obj);
         if (!results.isEmpty()) {
             for (ConstraintViolation<Object> result : results) {
-                throw new ValidateException(result.getMessage());
+                throw new BusinessException(result.getMessage());
             }
 
         }
