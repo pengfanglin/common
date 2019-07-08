@@ -3,7 +3,6 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
 }
 
-apply from: rootProject.projectDir.path + '/ext.gradle'
 apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: 'maven'
@@ -22,6 +21,19 @@ tasks.withType(JavaCompile) {
 // JVM 版本号要求
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+def env = project.hasProperty('env') && project.property("env") == "pro" ? "pro" : "dev"
+def jarVersionSuffix = env == "pro" ? "-RELEASE" : "-SNAPSHOT"
+
+ext {
+    poiVersion = '3.17'
+    javaseVersion = '3.3.2'
+    jedisVersion = '2.10.0'
+    zipkinSenderOkhttp3Version = '2.8.1'
+    braveInstrumentationDubboRpcVersion = '5.6.3'
+    mapperVersion = '2.1.5'
+    mybatisSpringbootStarterVersion = '1.3.1'
+}
 
 repositories {
     mavenLocal()
@@ -63,6 +75,12 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'local'
+            version += jarVersionSuffix
         }
     }
 }
