@@ -326,4 +326,24 @@ public class OthersUtils {
         BigDecimal decimal = new BigDecimal(value);
         return decimal.setScale(length, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
+
+    /**
+     * 从request中读取参数
+     *
+     * @param request
+     * @return
+     */
+    public static Map<String, Object> readRequestParams(HttpServletRequest request) {
+        Map<String, Object> map = new LinkedHashMap<>(5);
+        map.put("URL", request.getRequestURL());
+        map.put("Method", request.getMethod());
+        map.put("Protocol", request.getProtocol());
+        Map<String, String> params = new LinkedHashMap<>(10);
+        for (Enumeration<String> names = request.getParameterNames(); names.hasMoreElements(); ) {
+            String name = names.nextElement();
+            params.put(name, request.getParameter(name));
+        }
+        map.put("params", params);
+        return map;
+    }
 }
