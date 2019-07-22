@@ -27,7 +27,6 @@ def jarVersionSuffix = env == "pro" ? "-RELEASE" : "-SNAPSHOT"
 
 ext {
     poiVersion = '3.17'
-    javaseVersion = '3.3.2'
     jedisVersion = '2.10.0'
     zipkinSenderOkhttp3Version = '2.8.1'
     braveInstrumentationDubboRpcVersion = '5.6.3'
@@ -56,7 +55,6 @@ dependencies {
     }
     implementation("org.apache.poi:poi:${poiVersion}")
     implementation("org.apache.poi:poi-ooxml:${poiVersion}")
-    implementation("com.google.zxing:javase:${javaseVersion}")
     implementation("org.apache.httpcomponents:httpclient")
     implementation("redis.clients:jedis:${jedisVersion}")
     implementation("org.springframework.boot:spring-boot-starter-aop")
