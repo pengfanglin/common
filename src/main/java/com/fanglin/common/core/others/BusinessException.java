@@ -23,4 +23,9 @@ public class BusinessException extends RuntimeException {
         super(error);
         this.code = BusinessEnum.DEFAULT.getCode();
     }
+
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
+    }
 }
