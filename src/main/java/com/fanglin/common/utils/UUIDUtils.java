@@ -185,7 +185,7 @@ public class UUIDUtils {
      * @param longId uuid
      * @return
      */
-    public static String[] getTimeFromUUID(long longId) {
+    public static String[] getTimeFromUuid(long longId) {
         String id = Long.toBinaryString(longId);
         int len = id.length();
         int sequenceStart = len < WORKER_ID_SHIFT ? 0 : len - WORKER_ID_SHIFT;

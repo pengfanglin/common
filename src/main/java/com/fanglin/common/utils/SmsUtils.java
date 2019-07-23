@@ -183,8 +183,8 @@ public class SmsUtils {
             if (okStatus == jsonNode.findValue("result").intValue()) {
                 return jsonNode.findValue("sid").textValue();
             } else {
-                log.warn("短信发送失败:{}", jsonNode.findValue("errmsg").textValue());
-                throw new BusinessException("短信发送失败:" + jsonNode.findValue("errmsg").textValue());
+                log.warn("短信发送失败:{}", jsonNode.findValue("errMsg").textValue());
+                throw new BusinessException("短信发送失败:" + jsonNode.findValue("errMsg").textValue());
             }
         } catch (Exception e) {
             log.warn("短信发送失败:{}", e.getMessage());
