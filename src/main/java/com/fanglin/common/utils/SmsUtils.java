@@ -148,12 +148,12 @@ public class SmsUtils {
         if (OthersUtils.isEmpty(templateId)) {
             throw new BusinessException("短信模板ID不能为空");
         }
-        String random = OthersUtils.createRandom(6);
+        String random = OthersUtils.randomString(6);
         long time = System.currentTimeMillis() / 1000;
         StringBuilder sb = new StringBuilder();
         sb.append("appkey=")
             .append(smsProperties.getTengXun().getAppKey())
-            .append("&random=")
+            .append("&randomString=")
             .append(random)
             .append("&time=")
             .append(time)
@@ -163,7 +163,7 @@ public class SmsUtils {
         try {
             Map<String, Object> params = new HashMap<>(10);
             params.put("sdkappid", smsProperties.getTengXun().getAppid());
-            params.put("random", random);
+            params.put("randomString", random);
             params.put("sig", sig);
             Map<String, String> phoneParams = new HashMap<>(2);
             phoneParams.put("mobile", phone);

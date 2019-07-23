@@ -142,7 +142,7 @@ public class WxUtils {
     public static Wx getWXAuthorization(String url) {
         String accessToken = getAccessToken();
         String jsApiTicket = getJsApiTicket(accessToken);
-        String nonceStr = OthersUtils.createRandom(16);
+        String nonceStr = OthersUtils.randomString(16);
         long timestamp = Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
         Wx wx = new Wx()
             .setTicket(jsApiTicket)

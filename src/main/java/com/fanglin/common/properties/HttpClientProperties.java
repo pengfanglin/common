@@ -1,8 +1,6 @@
 package com.fanglin.common.properties;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +10,8 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @date 2019/4/2 10:59
  **/
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "http")

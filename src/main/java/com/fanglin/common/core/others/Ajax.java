@@ -1,6 +1,7 @@
 package com.fanglin.common.core.others;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -9,7 +10,8 @@ import lombok.experimental.Accessors;
  * @author 彭方林
  * @date 2018年4月2日
  */
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class Ajax<T> {
     /**
@@ -17,9 +19,9 @@ public class Ajax<T> {
      */
     private int code;
     /**
-     * 错误信息
+     * 提示内容
      */
-    private String error;
+    private String message;
     /**
      * 结果集
      */
@@ -40,19 +42,19 @@ public class Ajax<T> {
     public static Ajax error() {
         return new Ajax<String>()
             .setCode(400)
-            .setError("操作失败");
+            .setMessage("操作失败");
     }
 
     public static Ajax error(String error) {
         return new Ajax<String>()
             .setCode(400)
-            .setError(error);
+            .setMessage(error);
     }
 
     public static Ajax status(int code, String error) {
         return new Ajax<String>()
             .setCode(code)
-            .setError(error);
+            .setMessage(error);
     }
 
     public static <T> Ajax<T> status(int code, T data) {

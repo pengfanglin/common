@@ -1,6 +1,8 @@
 package com.fanglin.common.core.others;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -10,7 +12,8 @@ import lombok.experimental.Accessors;
  * @version 1.0
  * @date 2019/4/2 14:32
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class Wx {
     /**

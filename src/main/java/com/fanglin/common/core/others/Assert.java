@@ -18,6 +18,12 @@ public class Assert {
         }
     }
 
+    public static void isNull(Object object, String errorMsg) {
+        if (object != null) {
+            throw new BusinessException(errorMsg);
+        }
+    }
+
 
     public static void notEmpty(String text, String errorMsg) {
         if (text == null || text.length() == 0) {

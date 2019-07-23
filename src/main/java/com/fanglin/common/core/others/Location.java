@@ -1,6 +1,8 @@
 package com.fanglin.common.core.others;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -9,7 +11,8 @@ import lombok.experimental.Accessors;
  * @date 2019/4/2 14:27
  * @version 1.0
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class Location {
 	/**

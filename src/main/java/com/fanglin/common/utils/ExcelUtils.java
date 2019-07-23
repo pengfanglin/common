@@ -144,7 +144,7 @@ public class ExcelUtils {
                 }
             }
             if (OthersUtils.isEmpty(fileName)) {
-                fileName = OthersUtils.createRandom(10) + "xls";
+                fileName = OthersUtils.randomString(10) + "xls";
             }
             response.setContentType("application/x-msdownload;");
             response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName,"UTF-8"));

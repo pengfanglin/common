@@ -1,8 +1,6 @@
 package com.fanglin.common.properties;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +12,8 @@ import org.springframework.stereotype.Component;
  * @date 2019/4/2 14:30
  * @version 1.0
  **/
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "jedis")

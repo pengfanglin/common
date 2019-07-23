@@ -1,5 +1,6 @@
 package com.fanglin.common.utils;
 
+import com.fanglin.common.core.others.Assert;
 import com.fanglin.common.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
@@ -19,6 +20,7 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 其他工具类方法
@@ -265,21 +267,26 @@ public class OthersUtils {
     /**
      * 产生随机数(纯数字)
      */
-    public static String createRandom(int length) {
-        return createRandom(true, length);
+    public static int random(int length) {
+        Assert.isTrue(length > 0 && length < 9, "长度范围(1-8)");
+        int start = (int) Math.pow(10, length - 1);
+        int end = (int) Math.pow(10, length);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        return random.nextInt(start, end);
     }
 
     /**
      * 产生随机数(字母+数字)
      */
-    public static String createRandom(boolean numberFlag, int length) {
-        String strTable = numberFlag ? "0123456789" : "0123456789abcdefghijkmnpqrstuvwxyz";
+    public static String randomString(int length) {
+        Assert.isTrue(length > 0, "长度不合法");
+        String strTable = "0123456789abcdefghijkmnpqrstuvwxyz";
         int len = strTable.length();
         StringBuilder stringBuffer = new StringBuilder();
         while (stringBuffer.length() < length) {
-            double dblR = Math.random() * len;
-            int intR = (int) Math.floor(dblR);
-            char c = strTable.charAt(intR);
+            double a = Math.random() * len;
+            int b = (int) Math.floor(a);
+            char c = strTable.charAt(b);
             if (('0' <= c) && (c <= '9')) {
                 stringBuffer.append(c);
             }
