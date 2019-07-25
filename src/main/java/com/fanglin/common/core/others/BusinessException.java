@@ -14,6 +14,11 @@ public class BusinessException extends RuntimeException {
     @Getter
     private int code;
 
+    public BusinessException() {
+        super("服务器异常");
+        this.code = 400;
+    }
+
     public BusinessException(BusinessEnum businessEnum) {
         super(businessEnum.getMessage());
         this.code = businessEnum.getCode();
@@ -21,7 +26,7 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(String error) {
         super(error);
-        this.code = BusinessEnum.DEFAULT.getCode();
+        this.code = 400;
     }
 
     @Override

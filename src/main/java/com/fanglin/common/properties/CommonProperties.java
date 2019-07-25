@@ -19,10 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonProperties {
     /**
-     * 请求日志
-     */
-    private boolean requestLog = false;
-    /**
      * redis自动配置 默认关闭
      */
     private boolean redis = false;
@@ -50,4 +46,21 @@ public class CommonProperties {
      * 静态文件保存目录
      */
     private String staticDir;
+    /**
+     * 请求日志
+     */
+    private RequestLogProperties requestLog;
+
+    @Setter
+    @Getter
+    public static class RequestLogProperties {
+        /**
+         * 是否开启请求日志
+         */
+        private boolean enable = false;
+        /**
+         * 日志级别
+         */
+        private String level = "debug";
+    }
 }
