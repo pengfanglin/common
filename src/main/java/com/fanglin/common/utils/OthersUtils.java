@@ -344,7 +344,6 @@ public class OthersUtils {
         Map<String, Object> map = new LinkedHashMap<>(5);
         map.put("URL", request.getRequestURL());
         map.put("Method", request.getMethod());
-        map.put("Protocol", request.getProtocol());
         Map<String, String> params = new LinkedHashMap<>(10);
         for (Enumeration<String> names = request.getParameterNames(); names.hasMoreElements(); ) {
             String name = names.nextElement();
