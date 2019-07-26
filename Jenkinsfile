@@ -1,9 +1,14 @@
 pipeline {
   agent any
   stages {
-    stage('build') {
+    stage('build-test') {
       steps {
-        sh 'gradle build'
+        sh 'gradle build publishMavenPublicationToNexusRepository -x Test'
+      }
+    }
+    stage('build-pro') {
+      steps {
+        sh 'gradle build publishMavenPublicationToNexusRepository -Penv=pro-x Test'
       }
     }
   }
