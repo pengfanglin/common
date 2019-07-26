@@ -22,7 +22,7 @@ tasks.withType(JavaCompile) {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-def env = project.hasProperty('pro') ? "pro" : "test"
+def env = project.hasProperty('env') ? project.property("env") : "test"
 def jarVersionSuffix = env == "pro" ? "-RELEASE" : "-SNAPSHOT"
 
 ext {
