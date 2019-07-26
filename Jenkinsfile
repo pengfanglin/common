@@ -3,12 +3,12 @@ pipeline {
   stages {
     stage('prepare-test') {
       steps {
-        git(url: '${env.gitUrl+\'/\'+env.projectName+\'.git\'}', branch: 'test', credentialsId: '6ed03dc02abc63041fb10f034f8434b93bec7cb0')
+        git(url: 'env.gitUrl+\'/\'+env.projectName+\'.git\'', branch: 'test', credentialsId: '6ed03dc02abc63041fb10f034f8434b93bec7cb0')
       }
     }
     stage('prepare-master') {
       steps {
-        git(url: '${env.gitUrl+\'/\'+env.projectName+\'.git\'}', branch: 'master', credentialsId: '6ed03dc02abc63041fb10f034f8434b93bec7cb0')
+        git(url: 'env.gitUrl+\'/\'+env.projectName+\'.git\'', branch: 'master', credentialsId: '6ed03dc02abc63041fb10f034f8434b93bec7cb0')
       }
     }
     stage('build-test') {
