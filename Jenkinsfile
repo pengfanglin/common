@@ -22,7 +22,7 @@ pipeline {
         branch 'test'
       }
       steps {
-        sh 'gradle build publishMavenPublicationToNexusRepository -x Test'
+        sh 'gradle build publishMavenPublicationToNexusRepository -x Test --refresh-dependencies'
       }
     }
     stage('build-master') {
@@ -30,7 +30,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'gradle build publishMavenPublicationToNexusRepository -Penv=pro -x Test'
+        sh 'gradle build publishMavenPublicationToNexusRepository -Penv=pro -x Test --refresh-dependencies'
       }
     }
   }
