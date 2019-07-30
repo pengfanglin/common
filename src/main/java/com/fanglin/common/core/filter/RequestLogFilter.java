@@ -45,7 +45,8 @@ public class RequestLogFilter implements Filter {
             if (request.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
                 requestWrapper = new RequestWrapper(req);
                 String json = getRequestJsonString(requestWrapper);
-                if (OthersUtils.notEmpty(json) && (json.startsWith("{") || json.startsWith("["))) {
+                boolean printJson = OthersUtils.notEmpty(json) && (json.startsWith("{") || json.startsWith("["));
+                if (printJson) {
                     JsonNode jsonNode = objectMapper.readValue(json, JsonNode.class);
                     requestParams.put("json", jsonNode);
                 }

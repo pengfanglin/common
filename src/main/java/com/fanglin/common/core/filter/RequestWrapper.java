@@ -1,6 +1,5 @@
 package com.fanglin.common.core.filter;
 
-import com.fanglin.tkmapper.generator.my.StringUtils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -93,7 +92,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     }
 
     private HashMap<String, String[]> getParamMapFromPost(HttpServletRequest request) {
-        String body = StringUtils.EMPTY;
+        String body = "";
         try {
             body = getRequestBody(request.getInputStream());
         } catch (IOException e) {
@@ -127,7 +126,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
         if (s == null) {
             throw new IllegalArgumentException();
         }
-        HashMap<String, String[]> ht = new HashMap<>();
+        HashMap<String, String[]> ht = new HashMap<>(10);
         StringTokenizer st = new StringTokenizer(s, "&");
         while (st.hasMoreTokens()) {
             String pair = st.nextToken();
@@ -182,7 +181,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
             try {
                 return URLDecoder.decode(value, UTF_8);
             } catch (UnsupportedEncodingException e) {
-                return StringUtils.EMPTY;
+                return "";
             }
         }
     }
