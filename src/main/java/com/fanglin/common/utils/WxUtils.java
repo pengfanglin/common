@@ -47,24 +47,24 @@ public class WxUtils {
      * @return
      */
     public static String getJsApiTicket(String accessToken) {
-        Jedis jedis = JedisUtils.getJedis();
-        String jsApiTicket = jedis.get("wxJsApiTicket");
-        if (OthersUtils.isEmpty(jsApiTicket)) {
-            Map<String, Object> params = new HashMap<>(10);
-            params.put("accessToken", accessToken);
-            params.put("type", JS_API_TICKET_TYPE);
-            String result = HttpUtils.get(JS_API_TICKET_URL, params);
-            Wx wx = JsonUtils.jsonToObject(result, Wx.class);
-            if (wx.getErrCode() == 0) {
-                jsApiTicket = wx.getTicket();
-                jedis.set("wx_access_token", jsApiTicket, "NX", "EX", 7000);
-            } else {
-                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
-                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
+        try(Jedis jedis = JedisUtils.getJedis()){
+            String jsApiTicket = jedis.get("wxJsApiTicket");
+            if (OthersUtils.isEmpty(jsApiTicket)) {
+                Map<String, Object> params = new HashMap<>(10);
+                params.put("accessToken", accessToken);
+                params.put("type", JS_API_TICKET_TYPE);
+                String result = HttpUtils.get(JS_API_TICKET_URL, params);
+                Wx wx = JsonUtils.jsonToObject(result, Wx.class);
+                if (wx.getErrCode() == 0) {
+                    jsApiTicket = wx.getTicket();
+                    jedis.set("wx_access_token", jsApiTicket, "NX", "EX", 7000);
+                } else {
+                    log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
+                    throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
+                }
             }
+            return jsApiTicket;
         }
-        jedis.close();
-        return jsApiTicket;
     }
 
     /**
@@ -73,25 +73,25 @@ public class WxUtils {
      * @return
      */
     public static String getAccessToken() {
-        Jedis jedis = JedisUtils.getJedis();
-        String accessToken = jedis.get("wxAccessToken");
-        if (OthersUtils.isEmpty(accessToken)) {
-            Map<String, Object> params = new HashMap<>(10);
-            params.put("appid", wxProperties.getAppId());
-            params.put("secret", wxProperties.getSecret());
-            params.put("grant_type", ACCESS_TOKEN_GRANT_TYPE);
-            String result = HttpUtils.get(ACCESS_TOKEN, params);
-            Wx wx = JsonUtils.jsonToObject(result, Wx.class);
-            if (wx.getAccessToken() != null) {
-                accessToken = wx.getAccessToken();
-                jedis.set("wx_access_token", accessToken, "NX", "EX", 7000);
-            } else {
-                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
-                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
+        try(Jedis jedis = JedisUtils.getJedis()){
+            String accessToken = jedis.get("wxAccessToken");
+            if (OthersUtils.isEmpty(accessToken)) {
+                Map<String, Object> params = new HashMap<>(10);
+                params.put("appid", wxProperties.getAppId());
+                params.put("secret", wxProperties.getSecret());
+                params.put("grant_type", ACCESS_TOKEN_GRANT_TYPE);
+                String result = HttpUtils.get(ACCESS_TOKEN, params);
+                Wx wx = JsonUtils.jsonToObject(result, Wx.class);
+                if (wx.getAccessToken() != null) {
+                    accessToken = wx.getAccessToken();
+                    jedis.set("wx_access_token", accessToken, "NX", "EX", 7000);
+                } else {
+                    log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
+                    throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
+                }
             }
+            return accessToken;
         }
-        jedis.close();
-        return accessToken;
     }
 
     /**

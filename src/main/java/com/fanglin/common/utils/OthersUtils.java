@@ -181,6 +181,13 @@ public class OthersUtils {
     }
 
     /**
+     * 判断字符串是否不为空
+     */
+    public static boolean notEmpty(Object object) {
+        return !isEmpty(object);
+    }
+
+    /**
      * xml转map
      */
     public static Map<String, Object> xmlToMap(String xml) {

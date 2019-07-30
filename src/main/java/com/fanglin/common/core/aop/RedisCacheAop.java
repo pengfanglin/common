@@ -59,41 +59,23 @@ public class RedisCacheAop extends CacheAop {
         RedisCache redisCache = method.getAnnotation(RedisCache.class);
         String key = getCacheKey(method, point.getArgs(), redisCache.value());
         long timeout = redisCache.timeout();
-        Jedis jedis = jedisPool.getResource();
-        byte[] cacheData = jedis.get(key.getBytes());
-        Object data;
-        //本地缓存为空时或者用户设置了超时时间并且已经超时，需要重新加载数据
-        if (cacheData == null) {
-            data = point.proceed();
-            if (data != null || redisCache.cacheNull()) {
-                if (timeout != -1) {
-                    switch (redisCache.unit()) {
-                        case DAYS:
-                            timeout = timeout * 24 * 3600 * 1000;
-                            break;
-                        case HOURS:
-                            timeout = timeout * 3600 * 1000;
-                            break;
-                        case MINUTES:
-                            timeout = timeout * 60 * 1000;
-                            break;
-                        case SECONDS:
-                            timeout = timeout * 1000;
-                            break;
-                        case MILLISECONDS:
-                            break;
-                        default:
-                            jedis.close();
-                            throw new RuntimeException("不支持的时间单位");
-
+        try (Jedis jedis = jedisPool.getResource()) {
+            byte[] cacheData = jedis.get(key.getBytes());
+            Object data;
+            //本地缓存为空时或者用户设置了超时时间并且已经超时，需要重新加载数据
+            if (cacheData == null) {
+                data = point.proceed();
+                if (data != null || redisCache.cacheNull()) {
+                    if (timeout != -1) {
+                        timeout = parseTime(timeout, redisCache.unit());
                     }
+                    jedis.set(key.getBytes(), OthersUtils.objectToByte(data), "px".getBytes(), timeout);
                 }
-                jedis.set(key.getBytes(), OthersUtils.objectToByte(data), "px".getBytes(), timeout);
+            } else {
+                data = OthersUtils.byteToObject(cacheData);
             }
-        } else {
-            data = OthersUtils.byteToObject(cacheData);
+            return data;
         }
-        return data;
     }
 
     /**

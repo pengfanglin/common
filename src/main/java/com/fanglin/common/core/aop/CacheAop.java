@@ -10,6 +10,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 本地缓存切面类，首先从缓存中取数据，数据存在返回缓存数据，否则去数据库取
@@ -49,5 +50,33 @@ public class CacheAop {
         }
     }
 
+    /**
+     * 时间单位转换为毫秒数
+     *
+     * @param time 时间
+     * @param unit 单位
+     * @return
+     */
+    protected long parseTime(long time, TimeUnit unit) {
+        switch (unit) {
+            case DAYS:
+                time = time * 24 * 3600 * 1000;
+                break;
+            case HOURS:
+                time = time * 3600 * 1000;
+                break;
+            case MINUTES:
+                time = time * 60 * 1000;
+                break;
+            case SECONDS:
+                time = time * 1000;
+                break;
+            case MILLISECONDS:
+                break;
+            default:
+                throw new RuntimeException("不支持的时间单位");
+        }
+        return time;
+    }
 }
 

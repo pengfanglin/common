@@ -1,11 +1,11 @@
 package com.fanglin.common.core.filter;
 
-import com.fanglin.common.core.others.Ajax;
 import com.fanglin.common.properties.CommonProperties;
-import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * 打印请求参数过滤器
@@ -37,18 +38,36 @@ public class RequestLogFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         CommonProperties.LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
         CommonProperties.LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
-        //转换成代理类
-        ResponseWrapper wrapperResponse = new ResponseWrapper((HttpServletResponse) response);
-        //打印请求参数日志
-        if (requestProperties.isEnable() && !requestProperties.getLevel().equals(LogLevel.OFF)) {
-            String requestLog = objectMapper.writeValueAsString(OthersUtils.readRequestParams(req));
+        ResponseWrapper responseWrapper = null;
+        if (requestProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
+            RequestWrapper requestWrapper = null;
+            Map<String, Object> requestParams = OthersUtils.readRequestParams(req);
+            if (request.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                requestWrapper = new RequestWrapper(req);
+                String json = getRequestJsonString(requestWrapper);
+                if (OthersUtils.notEmpty(json) && (json.startsWith("{") || json.startsWith("["))) {
+                    JsonNode jsonNode = objectMapper.readValue(json, JsonNode.class);
+                    requestParams.put("json", jsonNode);
+                }
+            }
+            String requestLog = objectMapper.writeValueAsString(requestParams);
             printLog(true, requestProperties.getLevel(), requestLog);
+            if (responseProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
+                responseWrapper = new ResponseWrapper((HttpServletResponse) response);
+                chain.doFilter(requestWrapper == null ? req : requestWrapper, responseWrapper);
+            } else {
+                chain.doFilter(requestWrapper == null ? req : requestWrapper, response);
+            }
+        } else {
+            if (responseProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
+                responseWrapper = new ResponseWrapper((HttpServletResponse) response);
+                chain.doFilter(request, responseWrapper);
+            } else {
+                chain.doFilter(request, response);
+            }
         }
-        chain.doFilter(request, wrapperResponse);
-        //打印返回结果日志
-        if (responseProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
-            byte[] content = wrapperResponse.getContent();
-            //判断是否有值
+        if (responseProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF) && responseWrapper != null) {
+            byte[] content = responseWrapper.getContent();
             if (content.length > 0) {
                 String responseLog = new String(content, StandardCharsets.UTF_8);
                 printLog(false, responseProperties.getLevel(), responseLog);
@@ -86,5 +105,67 @@ public class RequestLogFilter implements Filter {
             default:
                 break;
         }
+    }
+
+    /***
+     * 获取 request 中 json 字符串的内容
+     *
+     * @param request
+     * @throws IOException
+     */
+    public static String getRequestJsonString(RequestWrapper request) throws IOException {
+        String submitMethod = request.getMethod();
+        if ("GET".equals(submitMethod)) {
+            if (OthersUtils.isEmpty(request.getQueryString())) {
+                return getRequestPostStr(request);
+            } else {
+                return new String(request.getQueryString().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8).replaceAll("%22", "\"");
+            }
+        } else {
+            return getRequestPostStr(request);
+        }
+    }
+
+    /**
+     * 获取 post 请求的 byte[] 数组
+     *
+     * @param request 请求体
+     * @return
+     * @throws IOException
+     */
+    public static byte[] getRequestPostBytes(HttpServletRequest request) throws IOException {
+        int contentLength = request.getContentLength();
+        if (contentLength < 0) {
+            return null;
+        }
+        byte[] buffer = new byte[contentLength];
+        for (int i = 0; i < contentLength; ) {
+            int readLen = request.getInputStream().read(buffer, i,
+                contentLength - i);
+            if (readLen == -1) {
+                break;
+            }
+            i += readLen;
+        }
+        return buffer;
+    }
+
+    /**
+     * 描述:获取 post 请求内容
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    public static String getRequestPostStr(HttpServletRequest request) throws IOException {
+        byte[] buffer = getRequestPostBytes(request);
+        if (buffer == null) {
+            return "{}";
+        }
+        String charEncoding = request.getCharacterEncoding();
+        if (charEncoding == null) {
+            charEncoding = "UTF-8";
+        }
+        return new String(buffer, charEncoding);
     }
 }

@@ -20,15 +20,15 @@ public class SmsProperties {
     /**
      * 助通科技短信
      */
-    private ZhuTongProperties zhuTong;
+    private ZhuTongProperties zhuTong=new ZhuTongProperties();
     /**
      * 阿里短信
      */
-    private AliProperties ali;
+    private AliProperties ali=new AliProperties();
     /**
      * 腾讯短信
      */
-    private TengXunProperties tengXun;
+    private TengXunProperties tengXun=new TengXunProperties();
 
     @Setter
     @Getter
