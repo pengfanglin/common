@@ -1,6 +1,8 @@
 package com.fanglin.common.core.filter;
 
 
+import org.springframework.http.HttpMethod;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     public RequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         body = readBytes(request.getInputStream());
-        if ("POST".equals(request.getMethod().toUpperCase())) {
+        if (HttpMethod.POST.toString().equals(request.getMethod().toUpperCase())) {
             paramsMap = getParamMapFromPost(this);
         } else {
             paramsMap = getParamMapFromGet(this);
