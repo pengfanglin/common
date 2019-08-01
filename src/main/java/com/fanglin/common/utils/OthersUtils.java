@@ -359,4 +359,19 @@ public class OthersUtils {
         map.put("params", params);
         return map;
     }
+
+    /**
+     * 从request中读取请求头参数
+     *
+     * @param request
+     * @return
+     */
+    public static Map<String, String> readRequestHeaders(HttpServletRequest request) {
+        Map<String, String> headers = new LinkedHashMap<>(5);
+        for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements(); ) {
+            String name = names.nextElement();
+            headers.put(name, request.getHeader(name));
+        }
+        return headers;
+    }
 }
