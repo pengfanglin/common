@@ -58,7 +58,7 @@ public class CommonProperties {
         /**
          * 开始日志
          */
-        private boolean enable;
+        private boolean enable=false;
         /**
          * 请求日志
          */
