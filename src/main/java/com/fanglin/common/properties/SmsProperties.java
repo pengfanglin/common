@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "sms")
+@ConfigurationProperties(prefix = "common.sms")
 @Component
 public class SmsProperties {
     /**

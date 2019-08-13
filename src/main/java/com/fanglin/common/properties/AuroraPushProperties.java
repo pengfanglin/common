@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "push")
+@ConfigurationProperties(prefix = "common.push")
 @Component
 public class AuroraPushProperties {
     /**

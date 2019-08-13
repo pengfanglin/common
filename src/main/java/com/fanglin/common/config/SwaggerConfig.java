@@ -2,8 +2,10 @@ package com.fanglin.common.config;
 
 import com.fanglin.common.properties.SwaggerProperties;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -24,6 +26,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @ConditionalOnClass({Docket.class, Api.class})
+@ConditionalOnProperty(name = "common.swagger.enable", havingValue = "true")
+@Slf4j
 public class SwaggerConfig {
 
     @Autowired
@@ -31,6 +35,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket createRestApi() {
+        log.info("swagger配置成功");
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
             .select()

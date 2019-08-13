@@ -2,6 +2,7 @@ package com.fanglin.common.config;
 
 import com.fanglin.common.core.filter.RequestLogFilter;
 import com.fanglin.common.properties.CommonProperties;
+import com.fanglin.common.properties.LogProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,10 +28,10 @@ public class FilterConfig {
      * 打印请求日志
      */
     @Bean
-    @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true")
+    @ConditionalOnProperty(name = "common.log.enable", havingValue = "true")
     public FilterRegistrationBean filterRegister(RequestLogFilter requestLogFilter, CommonProperties commonProperties) {
-        CommonProperties.LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
-        CommonProperties.LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
+        LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
+        LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
         if (requestProperties.isEnable()) {
             log.info("请求参数日志打印开启成功,日志级别:{}", requestProperties.getLevel());
         }

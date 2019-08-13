@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/4/2 10:55
  **/
 @Configuration
-@ConditionalOnProperty(prefix = "common", name = "zipkin", havingValue = "true")
+@ConditionalOnProperty(name = "common.zipkin.enable", havingValue = "true")
 @ConditionalOnClass({OkHttpSender.class, Tracing.class})
 @Slf4j
 public class ZipkinConfig {

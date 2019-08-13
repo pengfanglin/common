@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "gaode")
+@ConfigurationProperties(prefix = "common.gaode")
 @Component
 public class GaoDeMapProperties {
     /**

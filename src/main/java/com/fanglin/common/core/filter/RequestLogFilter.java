@@ -1,6 +1,7 @@
 package com.fanglin.common.core.filter;
 
 import com.fanglin.common.properties.CommonProperties;
+import com.fanglin.common.properties.LogProperties;
 import com.fanglin.common.utils.OthersUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +37,8 @@ public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
-        CommonProperties.LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
-        CommonProperties.LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
+        LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
+        LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
         ResponseWrapper responseWrapper = null;
         if (requestProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
             RequestWrapper requestWrapper = null;

@@ -30,7 +30,7 @@ import java.util.Objects;
  * @date 2019/4/3 13:02
  **/
 @Configuration
-@ConditionalOnProperty(prefix = "common", name = "redis", havingValue = "true")
+@ConditionalOnProperty(name = "common.redis", havingValue = "true")
 @ConditionalOnClass(RedisTemplate.class)
 @EnableCaching
 @Slf4j

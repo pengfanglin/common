@@ -16,9 +16,13 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "jedis")
+@ConfigurationProperties(prefix = "common.jedis")
 @Component
 public class JedisProperties {
+    /**
+     * 是否启用
+     */
+    private boolean enable = false;
     /**
      * 主机地址
      */

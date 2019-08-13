@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "cross")
+@ConfigurationProperties(prefix = "common.cross")
 @Component
 public class CrossProperties {
     /**

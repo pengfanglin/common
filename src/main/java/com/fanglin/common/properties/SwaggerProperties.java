@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "swagger")
+@ConfigurationProperties(prefix = "common.swagger")
 @Component
 public class SwaggerProperties {
     /**
@@ -37,5 +37,5 @@ public class SwaggerProperties {
     /**
      * 是否开启
      */
-    private boolean enable = true;
+    private boolean enable = false;
 }

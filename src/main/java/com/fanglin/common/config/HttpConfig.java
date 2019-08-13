@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Primary;
  * @date 2019/4/2 13:35
  **/
 @Configuration
-@ConditionalOnProperty(prefix = "common", name = "http", havingValue = "true")
+@ConditionalOnProperty(name = "common.http.enable", havingValue = "true")
 @ConditionalOnClass(CloseableHttpClient.class)
 @Slf4j
 public class HttpConfig {

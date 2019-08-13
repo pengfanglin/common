@@ -19,7 +19,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @date 2019/4/3 13:04
  **/
 @Configuration
-@ConditionalOnProperty(prefix = "common", name = "jedis", havingValue = "true")
+@ConditionalOnProperty(name = "common.jedis.enable", havingValue = "true")
 @ConditionalOnClass(JedisPool.class)
 @Slf4j
 public class JedisConfig {

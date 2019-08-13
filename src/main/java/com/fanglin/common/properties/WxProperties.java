@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "wx")
+@ConfigurationProperties(prefix = "common.wx")
 @Component
 public class WxProperties {
     /**

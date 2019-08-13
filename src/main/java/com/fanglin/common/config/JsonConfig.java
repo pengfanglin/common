@@ -44,7 +44,7 @@ public class JsonConfig {
      * jackson对象声明
      */
     @Bean
-    @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "common.jackson", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper objectMapper() {
         log.info("ObjectMapper配置成功");
@@ -55,7 +55,7 @@ public class JsonConfig {
      * 空值处理的jackson对象声明
      */
     @Bean("ajaxObjectMapper")
-    @ConditionalOnProperty(prefix = "common", name = "ajax-jackson", havingValue = "true")
+    @ConditionalOnProperty(name = "common.ajax-jackson", havingValue = "true")
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper ajaxObjectMapper(AjaxSerializerModifier ajaxSerializerModifier) {
         log.info("AjaxObjectMapper配置成功");

@@ -18,9 +18,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "zipkin")
+@ConfigurationProperties(prefix = "common.zipkin")
 @Component
 public class ZipkinProperties {
+    /**
+     * 是否启用
+     */
+    private boolean enable = false;
     /**
      * 服务名
      */
