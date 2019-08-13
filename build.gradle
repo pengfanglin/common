@@ -33,6 +33,7 @@ ext {
     braveInstrumentationDubboRpcVersion = '5.6.3'
     mapperVersion = '2.1.5'
     mybatisSpringbootStarterVersion = '2.1.0'
+    pagehelperVersion = '1.2.12'
 }
 
 repositories {
@@ -67,6 +68,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis") {
         exclude module: 'lettuce-core'
     }
+    implementation("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
     implementation("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
     implementation("javax.servlet:javax.servlet-api")
