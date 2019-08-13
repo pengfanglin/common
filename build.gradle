@@ -51,7 +51,7 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok"
     testAnnotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     testCompileOnly("org.projectlombok:lombok")
-    api("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
 
     implementation("io.springfox:springfox-swagger2:${swaggerVersion}")
     implementation("io.springfox:springfox-swagger-ui:${swaggerVersion}")

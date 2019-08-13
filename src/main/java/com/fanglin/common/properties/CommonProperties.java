@@ -48,6 +48,10 @@ public class CommonProperties {
      */
     private String staticDir;
     /**
+     * 配置springMvc的默认序列化规则，对null对象做特殊处理
+     */
+    private boolean mvcConverter = true;
+    /**
      * 请求日志
      */
     private LogProperties log = new LogProperties();
@@ -58,7 +62,7 @@ public class CommonProperties {
         /**
          * 开始日志
          */
-        private boolean enable=false;
+        private boolean enable = false;
         /**
          * 请求日志
          */

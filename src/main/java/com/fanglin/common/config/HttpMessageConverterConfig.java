@@ -26,7 +26,7 @@ public class HttpMessageConverterConfig {
      * 配置springMvc的默认序列化规则，对null对象做特殊处理
      */
     @Bean
-    @ConditionalOnProperty(prefix = "common", name = "mvcConverter", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "common", name = "mvc-converter", havingValue = "true", matchIfMissing = true)
     public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter(AjaxSerializerModifier ajaxSerializerModifier) {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         log.info("mvc序列化配置成功，时间序列化格式为:{}", dateFormat);

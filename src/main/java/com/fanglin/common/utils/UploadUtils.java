@@ -54,7 +54,12 @@ public class UploadUtils {
                     //文件名
                     String fileName = String.valueOf(UUIDUtils.nextId());
                     //文件后缀
-                    String suffix = multipartFile.getOriginalFilename().substring(Objects.requireNonNull(multipartFile.getOriginalFilename()).lastIndexOf(".")).toLowerCase();
+                    String suffix;
+                    if (OthersUtils.notEmpty(multipartFile.getOriginalFilename())) {
+                        suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".")).toLowerCase();
+                    } else {
+                        suffix = "";
+                    }
                     //父目录
                     String basePath = getFileSaveParentPath();
                     //创建目录

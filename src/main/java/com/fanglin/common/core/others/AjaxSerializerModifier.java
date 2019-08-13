@@ -36,30 +36,11 @@ public class AjaxSerializerModifier extends BeanSerializerModifier {
                 continue;
             }
             if (clazz.isArray() || clazz.equals(List.class) || clazz.equals(Set.class)) {
-                //如果是array，list，set则序列化为[]
-                writer.assignNullSerializer(new JsonSerializer<Object>() {
-                    @Override
-                    public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-                        if (value == null) {
-                            jsonGenerator.writeStartArray();
-                            jsonGenerator.writeEndArray();
-                        } else {
-                            jsonGenerator.writeObject(value);
-                        }
-                    }
-                });
+                this.writeNullArray(writer);
             } else if (Objects.equals("java.lang", clazz.getPackage().getName()) || clazz.equals(Date.class)) {
-                //如果是基本数据类型的包装类型则序列化为""
-                writer.assignNullSerializer(new JsonSerializer<Object>() {
-                    @Override
-                    public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-                        if (value == null) {
-                            jsonGenerator.writeString("");
-                        } else {
-                            jsonGenerator.writeObject(value);
-                        }
-                    }
-                });
+                this.writeNullString(writer);
+            } else if (clazz.isEnum()) {
+                this.writeNullString(writer);
             } else {
                 this.writeNullObject(writer);
             }
@@ -67,6 +48,30 @@ public class AjaxSerializerModifier extends BeanSerializerModifier {
         return beanProperties;
     }
 
+    /**
+     * 空数组准换为[]
+     *
+     * @param writer
+     */
+    private void writeNullArray(BeanPropertyWriter writer) {
+        writer.assignNullSerializer(new JsonSerializer<Object>() {
+            @Override
+            public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
+                if (value == null) {
+                    jsonGenerator.writeStartArray();
+                    jsonGenerator.writeEndArray();
+                } else {
+                    jsonGenerator.writeObject(value);
+                }
+            }
+        });
+    }
+
+    /**
+     * 空对象准换为{}
+     *
+     * @param writer
+     */
     private void writeNullObject(BeanPropertyWriter writer) {
         writer.assignNullSerializer(new JsonSerializer<Object>() {
             @Override
@@ -74,6 +79,24 @@ public class AjaxSerializerModifier extends BeanSerializerModifier {
                 if (value == null) {
                     jsonGenerator.writeStartObject();
                     jsonGenerator.writeEndObject();
+                } else {
+                    jsonGenerator.writeObject(value);
+                }
+            }
+        });
+    }
+
+    /**
+     * 空数值准换为""
+     *
+     * @param writer
+     */
+    private void writeNullString(BeanPropertyWriter writer) {
+        writer.assignNullSerializer(new JsonSerializer<Object>() {
+            @Override
+            public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
+                if (value == null) {
+                    jsonGenerator.writeString("");
                 } else {
                     jsonGenerator.writeObject(value);
                 }

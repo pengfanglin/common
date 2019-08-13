@@ -3,11 +3,13 @@ package com.fanglin.common.utils;
 import com.fanglin.common.core.others.BusinessException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * JSON转换
@@ -20,6 +22,7 @@ import java.io.IOException;
 @Slf4j
 @ConditionalOnClass(ObjectMapper.class)
 public class JsonUtils {
+    @Getter
     private static ObjectMapper objectMapper = null;
 
     public JsonUtils(ObjectMapper objectMapper) {
@@ -30,8 +33,8 @@ public class JsonUtils {
     /**
      * 将集合类型json字符串转换为java对象
      */
-    public static <T> T jsonToObject(String json, Class<T> collectionClass, Class<?> elementClass) {
-        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClass);
+    public static <T> T jsonToList(String json, Class<T> elementClass) {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, elementClass);
         try {
             return objectMapper.readValue(json, javaType);
         } catch (IOException e) {
