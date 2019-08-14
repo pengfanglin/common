@@ -2,13 +2,15 @@ package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.Token;
 import com.fanglin.common.core.others.Ajax;
-import com.fanglin.common.core.others.TokenInfo;
+import com.fanglin.common.core.token.TokenData;
+import com.fanglin.common.core.token.TokenInfo;
 import com.fanglin.common.utils.JedisUtils;
 import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -45,39 +47,37 @@ public class TokenAop {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         //自定义请求头的请求，浏览器会首先发送一个OPTIONS类型的请求，对于该类请求直接返回200成功，否则后续真实请求不会发送
         if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
-            response.setStatus(HttpStatus.OK.value());
+            if (response != null) {
+                response.setStatus(HttpStatus.OK.value());
+            }
             return true;
         }
         String sessionId = this.getSessionId(request);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
-            Jedis jedis= JedisUtils.getJedis();
-            String key="token:" + sessionId;
-            String redisToken=jedis.get(key);
-            if(!OthersUtils.isEmpty(redisToken)){
-                TokenInfo tokenInfo = JsonUtils.jsonToObject(redisToken,TokenInfo.class);
-                long timeout=jedis.ttl(key);
-                //用户每次操作都重置令牌过期时间
-                if(timeout!=-1){
-                    jedis.set("token:" + sessionId, JsonUtils.objectToJson(tokenInfo), "px",tokenInfo.getTimeout());
-                }
-                pass = true;
-                //判断是否需要注入用户id
-                for (Object param : point.getArgs()) {
-                    if (param instanceof TokenInfo) {
-                        Field field = param.getClass().getDeclaredField("id");
-                        field.setAccessible(true);
-                        field.set(param,tokenInfo.getId());
+            long s=System.currentTimeMillis();
+            try (Jedis jedis = JedisUtils.getJedis()) {
+                String key = "assess_token:" + sessionId;
+                String redisToken = jedis.get(key);
+                if (OthersUtils.notEmpty(redisToken)) {
+                    TokenData tokenData = JsonUtils.jsonToObject(redisToken, TokenData.class);
+                    pass = true;
+                    for (Object param : point.getArgs()) {
+                        if (param instanceof TokenData) {
+                            BeanUtils.copyProperties(tokenData, param);
+                        }
                     }
+
                 }
             }
-            jedis.close();
+            long e=System.currentTimeMillis();
+            System.out.println(e-s);
         }
         //验证通过，继续执行，否则返回token验证失败
         if (pass) {
             return point.proceed();
         } else {
-            return Ajax.status(401,"未授权，请登录");
+            return Ajax.status(401, "未授权，请登录");
         }
     }
 
