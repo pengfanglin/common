@@ -54,28 +54,28 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok")
     compileOnly("org.projectlombok:lombok")
 
-    implementation("io.springfox:springfox-swagger2:${swaggerVersion}")
-    implementation("io.springfox:springfox-swagger-ui:${swaggerVersion}")
-    implementation("io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkinSenderOkhttp3Version}")
-    implementation("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}") {
+    compileOnly("io.springfox:springfox-swagger2:${swaggerVersion}")
+    compileOnly("io.springfox:springfox-swagger-ui:${swaggerVersion}")
+    compileOnly("io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkinSenderOkhttp3Version}")
+    compileOnly("io.zipkin.brave:brave-instrumentation-dubbo-rpc:${braveInstrumentationDubboRpcVersion}") {
         exclude module: 'dubbo'
     }
-    implementation("org.apache.poi:poi:${poiVersion}")
-    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
-    implementation("org.apache.httpcomponents:httpclient")
-    implementation("redis.clients:jedis:${jedisVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis") {
+    compileOnly("org.apache.poi:poi:${poiVersion}")
+    compileOnly("org.apache.poi:poi-ooxml:${poiVersion}")
+    compileOnly("org.apache.httpcomponents:httpclient")
+    compileOnly("redis.clients:jedis:${jedisVersion}")
+    compileOnly("org.springframework.boot:spring-boot-starter-aop")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-redis") {
         exclude module: 'lettuce-core'
     }
-    implementation("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
-    implementation("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
-    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
-    implementation("javax.servlet:javax.servlet-api")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("org.springframework:spring-web")
-    implementation("org.hibernate.validator:hibernate-validator")
-    implementation("org.glassfish:javax.el")
+    compileOnly("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
+    compileOnly("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
+    compileOnly("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
+    compileOnly("javax.servlet:javax.servlet-api")
+    compileOnly("com.fasterxml.jackson.core:jackson-databind")
+    compileOnly("org.springframework:spring-web")
+    compileOnly("org.hibernate.validator:hibernate-validator")
+    compileOnly("org.glassfish:javax.el")
 }
 publishing {
     publications {
