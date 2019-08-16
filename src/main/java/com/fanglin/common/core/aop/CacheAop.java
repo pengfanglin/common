@@ -1,5 +1,6 @@
 package com.fanglin.common.core.aop;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @ConditionalOnClass(ExpressionParser.class)
+@Slf4j
 public class CacheAop {
 
     /**
@@ -36,18 +38,14 @@ public class CacheAop {
         //获取目标方法参数名
         String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
         if (paramNames == null) {
-            return key;
+            return "cache:" + key;
         }
         for (int i = 0; i < args.length; i++) {
             context.setVariable(paramNames[i], args[i]);
         }
-        try {
-            Expression expression = parser.parseExpression(key);
-            Object value = expression.getValue(context);
-            return value == null || "".equals(value) ? key : value.toString();
-        } catch (Exception e) {
-            return key;
-        }
+        Expression expression = parser.parseExpression(key);
+        Object value = expression.getValue(context);
+        return "cache:" + (value == null || "".equals(value) ? key : value.toString());
     }
 
     /**

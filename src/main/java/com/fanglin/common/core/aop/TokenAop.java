@@ -55,7 +55,6 @@ public class TokenAop {
         String sessionId = this.getSessionId(request);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
-            long s=System.currentTimeMillis();
             try (Jedis jedis = JedisUtils.getJedis()) {
                 String key = "assess_token:" + sessionId;
                 String redisToken = jedis.get(key);
@@ -70,8 +69,6 @@ public class TokenAop {
 
                 }
             }
-            long e=System.currentTimeMillis();
-            System.out.println(e-s);
         }
         //验证通过，继续执行，否则返回token验证失败
         if (pass) {
