@@ -42,7 +42,7 @@ public class JedisProperties {
     /**
      * 连接超时 单位:毫秒
      */
-    private int timeout;
+    private int timeout=1000;
     /**
      * 最小闲置连接数
      */
