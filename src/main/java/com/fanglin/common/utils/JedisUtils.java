@@ -41,11 +41,9 @@ public class JedisUtils {
 
     public static String set(String key, String value, String nxxx, String expx, long timeout) {
         log.debug("{} {} {} {} {}", key, value, nxxx, expx, timeout);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value, nxxx, expx, timeout);
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.set(key, value, nxxx, expx, timeout);
+        }
     }
 
     public static String setNx(String key, String value, String expx, long timeout) {
@@ -58,38 +56,30 @@ public class JedisUtils {
 
     public static String set(String key, String value) {
         log.debug("{} {}", key, value);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value);
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.set(key, value);
+        }
     }
 
     public static String set(String key, String value, String expx, long timeout) {
         log.debug("{} {} {} {}", key, value, expx, timeout);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value, expx, timeout);
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.set(key, value, expx, timeout);
+        }
     }
 
     public static String setNx(String key, String value) {
         log.debug("{} {}", key, value);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value, "nx");
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.set(key, value, "nx");
+        }
     }
 
     public static String setXx(String key, String value) {
         log.debug("{} {}", key, value);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.set(key, value, "xx");
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.set(key, value, "xx");
+        }
     }
 
     /**
@@ -100,11 +90,9 @@ public class JedisUtils {
      */
     public static String get(String key) {
         log.debug(key);
-        Jedis jedis = jedisPool.getResource();
-        String result = jedis.get(key);
-        log.debug(result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.get(key);
+        }
     }
 
     /**
@@ -115,10 +103,8 @@ public class JedisUtils {
      */
     public static Long del(String key) {
         log.debug(key);
-        Jedis jedis = jedisPool.getResource();
-        Long result = jedis.del(key);
-        log.debug("{}", result);
-        jedis.close();
-        return result;
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.del(key);
+        }
     }
 }
