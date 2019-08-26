@@ -37,6 +37,7 @@ public class JedisConfig {
         jedisPoolConfig.setMaxIdle(jedisProperties.getMaxIdle());
         jedisPoolConfig.setMinIdle(jedisProperties.getMinIdle());
         jedisPoolConfig.setMaxTotal(jedisProperties.getMaxTotal());
+        jedisPoolConfig.setMaxWaitMillis(jedisProperties.getMaxWaitMillis());
         return jedisPoolConfig;
     }
 }

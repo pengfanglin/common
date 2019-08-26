@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * jedis配置类
+ *
  * @author 彭方林
- * @date 2019/4/2 14:30
  * @version 1.0
+ * @date 2019/4/2 14:30
  **/
 @Setter
 @Getter
@@ -26,11 +27,11 @@ public class JedisProperties {
     /**
      * 主机地址
      */
-    private String host="127.0.0.1";
+    private String host = "127.0.0.1";
     /**
      * 端口
      */
-    private int port=6379;
+    private int port = 6379;
     /**
      * 密码
      */
@@ -38,21 +39,25 @@ public class JedisProperties {
     /**
      * 数据库
      */
-    private int database=0;
+    private int database = 0;
     /**
      * 连接超时 单位:毫秒
      */
-    private int timeout=1000;
+    private int timeout = 1000;
     /**
      * 最小闲置连接数
      */
-    private int minIdle=10;
+    private int minIdle = 10;
     /**
      * 最大闲置连接数
      */
-    private int maxIdle=50;
+    private int maxIdle = 50;
     /**
      * 最大活动对象数
      */
-    private int maxTotal=500;
+    private int maxTotal = 500;
+    /**
+     * 获取连接最大等待时间(ms)
+     */
+    private int maxWaitMillis = 1000;
 }

@@ -44,7 +44,7 @@ public class RequestLogFilter implements Filter {
             RequestWrapper requestWrapper = null;
             Map<String, Object> requestParams = OthersUtils.readRequestParams(req);
             //请求类型为json时，要从body中读取数据
-            if (request.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
+            if (ContentType.APPLICATION_JSON.getMimeType().equals(request.getContentType())) {
                 requestWrapper = new RequestWrapper(req);
                 String json = getRequestJsonString(requestWrapper);
                 boolean printJson = OthersUtils.notEmpty(json) && (json.startsWith("{") || json.startsWith("["));
