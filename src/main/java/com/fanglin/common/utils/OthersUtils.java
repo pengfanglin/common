@@ -33,6 +33,23 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OthersUtils {
 
     /**
+     * 请求头中过滤的头
+     */
+    private static Map<String, String> FILTER_HEADER;
+
+    static {
+        FILTER_HEADER = new HashMap<>(8);
+        FILTER_HEADER.put("Accept", null);
+        FILTER_HEADER.put("Cache-Control", null);
+        FILTER_HEADER.put("Connection", null);
+        FILTER_HEADER.put("Content-Length", null);
+        FILTER_HEADER.put("Postman-Token", null);
+        FILTER_HEADER.put("Accept-Encoding", null);
+        FILTER_HEADER.put("Cookie", null);
+        FILTER_HEADER.put("User-Agent", null);
+    }
+
+    /**
      * 对象序列化为二进制
      *
      * @param data
@@ -370,7 +387,9 @@ public class OthersUtils {
         Map<String, String> headers = new LinkedHashMap<>(5);
         for (Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements(); ) {
             String name = names.nextElement();
-            headers.put(name, request.getHeader(name));
+            if (!FILTER_HEADER.containsKey(name)) {
+                headers.put(name, request.getHeader(name));
+            }
         }
         return headers;
     }
