@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -392,5 +393,21 @@ public class OthersUtils {
             }
         }
         return headers;
+    }
+
+    /**
+     * url转码
+     *
+     * @param value
+     * @return
+     * @throws Exception
+     */
+    public static String specialUrlEncode(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            log.warn("编码失败:{}", e.getMessage());
+            throw new BusinessException("编码失败");
+        }
     }
 }

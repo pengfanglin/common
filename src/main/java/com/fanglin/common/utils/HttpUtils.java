@@ -146,15 +146,17 @@ public class HttpUtils {
                 return null;
             }
             int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entityRes = response.getEntity();
             if (statusCode == HttpStatus.SC_OK) {
-                HttpEntity entityRes = response.getEntity();
                 if (entityRes != null) {
                     return EntityUtils.toString(entityRes, "UTF-8");
                 }
+            } else {
+                log.warn("{}", EntityUtils.toString(entityRes, "UTF-8"));
             }
-            return null;
+            throw new BusinessException("post请求发送失败:" + statusCode);
         } catch (IOException e) {
-            log.error("post请求发送失败:{}", e.getMessage());
+            log.warn("post请求发送失败:{}", e.getMessage());
             throw new BusinessException("post请求发送失败:" + e.getMessage());
         } finally {
             if (response != null) {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 短信配置文件
+ *
  * @author fanglin
  * @version 1.0
  * @date 2019/4/2 10:59
@@ -18,41 +19,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsProperties {
     /**
-     * 助通科技短信
-     */
-    private ZhuTongProperties zhuTong=new ZhuTongProperties();
-    /**
      * 阿里短信
      */
-    private AliProperties ali=new AliProperties();
+    private AliProperties ali = new AliProperties();
     /**
      * 腾讯短信
      */
-    private TengXunProperties tengXun=new TengXunProperties();
+    private TengXunProperties tengXun = new TengXunProperties();
 
     @Setter
     @Getter
-    public static class ZhuTongProperties{
-        /**
-         * 账号
-         */
-        private String account;
-        /**
-         * 密码
-         */
-        private String password;
-    }
-    @Setter
-    @Getter
-    public static class AliProperties{
+    public static class AliProperties {
         /**
          * 授权key,阿里云控制台查看
          */
         private String accessKeyId;
+        /**
+         * 授权秘钥,阿里云控制台查看
+         */
+        private String accessSecret;
     }
+
     @Setter
     @Getter
-    public static class TengXunProperties{
+    public static class TengXunProperties {
         /**
          * 应用id
          */
