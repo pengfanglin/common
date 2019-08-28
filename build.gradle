@@ -18,7 +18,6 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-// JVM 版本号要求
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
