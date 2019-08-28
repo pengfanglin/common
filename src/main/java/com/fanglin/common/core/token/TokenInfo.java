@@ -38,5 +38,5 @@ public class TokenInfo implements Serializable {
     /**
      * 用户授权数据
      */
-    private DefaultTokenData data;
+    private Object data;
 }

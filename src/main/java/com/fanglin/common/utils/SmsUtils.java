@@ -81,6 +81,7 @@ public class SmsUtils {
                     log.warn(ret);
                     throw new BusinessException("发送短信失败");
                 default:
+                    log.warn(ret);
                     return false;
             }
         } catch (Exception e) {
