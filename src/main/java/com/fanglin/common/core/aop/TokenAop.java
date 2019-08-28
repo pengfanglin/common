@@ -2,8 +2,7 @@ package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.Token;
 import com.fanglin.common.core.others.Ajax;
-import com.fanglin.common.core.token.TokenData;
-import com.fanglin.common.core.token.TokenInfo;
+import com.fanglin.common.core.token.DefaultTokenData;
 import com.fanglin.common.utils.JedisUtils;
 import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
@@ -22,7 +21,6 @@ import redis.clients.jedis.Jedis;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Field;
 
 
 /**
@@ -59,11 +57,11 @@ public class TokenAop {
                 String key = "assess_token:" + sessionId;
                 String redisToken = jedis.get(key);
                 if (OthersUtils.notEmpty(redisToken)) {
-                    TokenData tokenData = JsonUtils.jsonToObject(redisToken, TokenData.class);
+                    DefaultTokenData defaultTokenData = JsonUtils.jsonToObject(redisToken, DefaultTokenData.class);
                     pass = true;
                     for (Object param : point.getArgs()) {
-                        if (param instanceof TokenData) {
-                            BeanUtils.copyProperties(tokenData, param);
+                        if (param instanceof DefaultTokenData) {
+                            BeanUtils.copyProperties(defaultTokenData, param);
                         }
                     }
 

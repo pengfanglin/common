@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class TokenData implements Serializable {
+public class DefaultTokenData implements Serializable {
     /**
      * 用户的主键
      */
