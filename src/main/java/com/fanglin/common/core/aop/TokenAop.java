@@ -6,10 +6,10 @@ import com.fanglin.common.core.token.DefaultTokenData;
 import com.fanglin.common.utils.JedisUtils;
 import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -21,6 +21,8 @@ import redis.clients.jedis.Jedis;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 
 /**
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @Aspect()
 @ConditionalOnClass(Aspect.class)
+@Slf4j
 public class TokenAop {
 
     /**
@@ -57,14 +60,22 @@ public class TokenAop {
                 String key = "assess_token:" + sessionId;
                 String redisToken = jedis.get(key);
                 if (OthersUtils.notEmpty(redisToken)) {
-                    DefaultTokenData defaultTokenData = JsonUtils.jsonToObject(redisToken, DefaultTokenData.class);
+                    Map tokenData = JsonUtils.jsonToObject(redisToken, Map.class);
                     pass = true;
                     for (Object param : point.getArgs()) {
                         if (param instanceof DefaultTokenData) {
-                            BeanUtils.copyProperties(defaultTokenData, param);
+                            for (Field field : param.getClass().getDeclaredFields()) {
+                                field.setAccessible(true);
+                                if (tokenData.containsKey(field.getName())) {
+                                    try {
+                                        field.set(param, tokenData.get(field.getName()));
+                                    } catch (IllegalAccessException e) {
+                                        log.warn("鉴权参数设置失败,字段:{} 值:{}", field.getName(), tokenData.get(field.getName()));
+                                    }
+                                }
+                            }
                         }
                     }
-
                 }
             }
         }
@@ -82,7 +93,7 @@ public class TokenAop {
     private String getSessionId(HttpServletRequest request) {
         //如果请求头中有 Authorization 则其值为sessionId，否则从cookie中获取
         String sessionId = request.getHeader("AUTHORIZATION");
-        if (!OthersUtils.isEmpty(sessionId)) {
+        if (OthersUtils.notEmpty(sessionId)) {
             return sessionId;
         } else {
             Cookie[] cookies = request.getCookies();

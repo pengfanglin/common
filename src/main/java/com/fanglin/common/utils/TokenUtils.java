@@ -33,7 +33,9 @@ public class TokenUtils {
         response.addHeader("AUTHORIZATION", assessToken);
         //cookie加入token
         Cookie assessCookie = new Cookie("AUTHORIZATION", assessToken);
+        assessCookie.setPath("/");
         Cookie refreshCookie = new Cookie("REFRESH_TOKEN", assessToken);
+        refreshCookie.setPath("/");
         try (Jedis jedis = JedisUtils.getJedis()) {
             setAssessToken(tokenInfo, assessToken, assessCookie, jedis);
             //刷新token
