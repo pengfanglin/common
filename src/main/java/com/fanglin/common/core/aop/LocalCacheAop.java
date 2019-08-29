@@ -86,25 +86,6 @@ public class LocalCacheAop extends CacheAop {
         cache.remove(key);
     }
 
-    /**
-     * 删除指定key
-     *
-     * @param key
-     */
-    public static void remove(String key) {
-        cache.remove(key);
-    }
-
-    /**
-     * 清空本地缓存
-     *
-     * @param key
-     */
-    public static void clear() {
-        cache.clear();
-    }
-
-
     @Setter
     @Getter
     @AllArgsConstructor
