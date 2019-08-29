@@ -29,6 +29,7 @@ public class LocalCacheAop extends CacheAop {
     /**
      * 本地缓存仓库
      */
+    @Getter
     private static Map<String, CacheData> cache = new ConcurrentHashMap<>();
 
     /**
