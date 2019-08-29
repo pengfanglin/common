@@ -1,6 +1,8 @@
 package com.fanglin.common.utils;
 
 /**
+ * 内存计算工具类
+ *
  * @author 彭方林
  * @version 1.0
  * @date 2019/8/29 17:55
@@ -102,52 +104,47 @@ public final class MemoryUtils {
     static final String HOT_SPOT_BEAN_CLASS = "com.sun.management.HotSpotDiagnosticMXBean";
 
     static {
-        boolean compressedOops = false;
-        int objectAlignment = 8;
-        try {
-            final Class<?> beanClazz = Class.forName(HOT_SPOT_BEAN_CLASS);
-            final Object hotSpotBean = Class.forName(MANAGEMENT_FACTORY_CLASS)
-                .getMethod("getPlatformMXBean", Class.class)
-                .invoke(null, beanClazz);
-            if (hotSpotBean != null) {
-                final Method getVmOption = beanClazz.getMethod("getVMOption", String.class);
-                try {
-                    final Object vmOption = getVmOption.invoke(hotSpotBean, "UseCompressedOops");
-                    compressedOops = Boolean.parseBoolean(
-                        vmOption.getClass().getMethod("getValue").invoke(vmOption).toString()
-                    );
-                } catch (ReflectiveOperationException | RuntimeException ignored) {
+        if (Long.parseLong(System.getProperty("sun.arch.data.model")) == 64) {
+            boolean compressedOops = false;
+            int objectAlignment = 8;
+            try {
+                final Class<?> beanClazz = Class.forName(HOT_SPOT_BEAN_CLASS);
+                final Object hotSpotBean = Class.forName(MANAGEMENT_FACTORY_CLASS)
+                    .getMethod("getPlatformMXBean", Class.class)
+                    .invoke(null, beanClazz);
+                if (hotSpotBean != null) {
+                    final Method getVmOptionMethod = beanClazz.getMethod("getVMOption", String.class);
+                    try {
+                        final Object vmOption = getVmOptionMethod.invoke(hotSpotBean, "UseCompressedOops");
+                        compressedOops = Boolean.parseBoolean(
+                            vmOption.getClass().getMethod("getValue").invoke(vmOption).toString()
+                        );
+                    } catch (ReflectiveOperationException | RuntimeException ignored) {
+                    }
+                    try {
+                        final Object vmOption = getVmOptionMethod.invoke(hotSpotBean, "ObjectAlignmentInBytes");
+                        objectAlignment = Integer.parseInt(
+                            vmOption.getClass().getMethod("getValue").invoke(vmOption).toString()
+                        );
+                    } catch (ReflectiveOperationException | RuntimeException ignored) {
+                    }
                 }
-                try {
-                    final Object vmOption = getVmOption.invoke(hotSpotBean, "ObjectAlignmentInBytes");
-                    objectAlignment = Integer.parseInt(
-                        vmOption.getClass().getMethod("getValue").invoke(vmOption).toString()
-                    );
-                } catch (ReflectiveOperationException | RuntimeException ignored) {
-                }
+            } catch (ReflectiveOperationException | RuntimeException ignored) {
             }
-        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            COMPRESSED_REFS_ENABLED = compressedOops;
+            NUM_BYTES_OBJECT_ALIGNMENT = objectAlignment;
+            NUM_BYTES_OBJECT_REF = COMPRESSED_REFS_ENABLED ? 4 : 8;
+            NUM_BYTES_OBJECT_HEADER = 8 + NUM_BYTES_OBJECT_REF;
+            NUM_BYTES_ARRAY_HEADER = (int) alignObjectSize(NUM_BYTES_OBJECT_HEADER + Integer.BYTES);
+        } else {
+            COMPRESSED_REFS_ENABLED = false;
+            NUM_BYTES_OBJECT_ALIGNMENT = 8;
+            NUM_BYTES_OBJECT_REF = 4;
+            NUM_BYTES_OBJECT_HEADER = 8;
+            NUM_BYTES_ARRAY_HEADER = NUM_BYTES_OBJECT_HEADER + Integer.BYTES;
         }
-        COMPRESSED_REFS_ENABLED = compressedOops;
-        NUM_BYTES_OBJECT_ALIGNMENT = objectAlignment;
-        // reference size is 4, if we have compressed oops:
-        NUM_BYTES_OBJECT_REF = COMPRESSED_REFS_ENABLED ? 4 : 8;
-        // "best guess" based on reference size:
-        NUM_BYTES_OBJECT_HEADER = 8 + NUM_BYTES_OBJECT_REF;
-        // array header is NUM_BYTES_OBJECT_HEADER + NUM_BYTES_INT, but aligned (object alignment):
-        NUM_BYTES_ARRAY_HEADER = (int) alignObjectSize(NUM_BYTES_OBJECT_HEADER + Integer.BYTES);
-
-        // get min/max value of cached Long class instances:
-        long longCacheMinValue = 0;
-        while (longCacheMinValue > Long.MIN_VALUE && Long.valueOf(longCacheMinValue - 1).equals(longCacheMinValue - 1)) {
-            longCacheMinValue -= 1;
-        }
-        long longCacheMaxValue = -1;
-        while (longCacheMaxValue < Long.MAX_VALUE && Long.valueOf(longCacheMaxValue + 1).equals(longCacheMaxValue + 1)) {
-            longCacheMaxValue += 1;
-        }
-        LONG_CACHE_MIN_VALUE = longCacheMinValue;
-        LONG_CACHE_MAX_VALUE = longCacheMaxValue;
+        LONG_CACHE_MIN_VALUE = Long.MIN_VALUE;
+        LONG_CACHE_MAX_VALUE = Long.MAX_VALUE;
         LONG_SIZE = (int) shallowSizeOfInstance(Long.class);
         STRING_SIZE = (int) shallowSizeOfInstance(String.class);
     }
@@ -171,63 +168,63 @@ public final class MemoryUtils {
     }
 
     /**
-     * Returns the size in bytes of the byte[] object.
+     * 返回byte数组的内存大小
      */
     public static long sizeOf(byte[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
     }
 
     /**
-     * Returns the size in bytes of the boolean[] object.
+     * 返回boolean数组的内存大小
      */
     public static long sizeOf(boolean[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + arr.length);
     }
 
     /**
-     * Returns the size in bytes of the char[] object.
+     * 返回char数组的内存大小
      */
     public static long sizeOf(char[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Character.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the short[] object.
+     * 返回short数组的内存大小
      */
     public static long sizeOf(short[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Short.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the int[] object.
+     * 返回int数组的内存大小
      */
     public static long sizeOf(int[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Integer.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the float[] object.
+     * 返回float数组的内存大小
      */
     public static long sizeOf(float[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Float.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the long[] object.
+     * 返回float数组的内存大小
      */
     public static long sizeOf(long[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Long.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the double[] object.
+     * 返回double数组的内存大小
      */
     public static long sizeOf(double[] arr) {
         return alignObjectSize((long) NUM_BYTES_ARRAY_HEADER + (long) Double.BYTES * arr.length);
     }
 
     /**
-     * Returns the size in bytes of the String[] object.
+     * 返回String数组的内存大小
      */
     public static long sizeOf(String[] arr) {
         long size = shallowSizeOf(arr);
@@ -301,7 +298,6 @@ public final class MemoryUtils {
         if (depth > MAX_DEPTH) {
             return size;
         }
-        // assume array-backed collection and add per-object references
         size += NUM_BYTES_ARRAY_HEADER + collection.size() * NUM_BYTES_OBJECT_REF;
         for (Object o : collection) {
             size += sizeOfObject(o, depth, defSize);
@@ -473,5 +469,9 @@ public final class MemoryUtils {
         } else {
             return bytes + "bytes";
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(format(sizeOfObject(new PageUtils())));
     }
 }
