@@ -56,22 +56,23 @@ public class TokenAop {
         String sessionId = this.getSessionId(request);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
+            String key = "assess_token:" + sessionId;
+            String redisToken;
             try (Jedis jedis = JedisUtils.getJedis()) {
-                String key = "assess_token:" + sessionId;
-                String redisToken = jedis.get(key);
-                if (OthersUtils.notEmpty(redisToken)) {
-                    Map tokenData = JsonUtils.jsonToObject(redisToken, Map.class);
-                    pass = true;
-                    for (Object param : point.getArgs()) {
-                        if (param instanceof DefaultTokenData) {
-                            for (Field field : param.getClass().getDeclaredFields()) {
-                                field.setAccessible(true);
-                                if (tokenData.containsKey(field.getName())) {
-                                    try {
-                                        field.set(param, tokenData.get(field.getName()));
-                                    } catch (IllegalAccessException e) {
-                                        log.warn("鉴权参数设置失败,字段:{} 值:{}", field.getName(), tokenData.get(field.getName()));
-                                    }
+                redisToken = jedis.get(key);
+            }
+            if (OthersUtils.notEmpty(redisToken)) {
+                Map tokenData = JsonUtils.jsonToObject(redisToken, Map.class);
+                pass = true;
+                for (Object param : point.getArgs()) {
+                    if (param instanceof DefaultTokenData) {
+                        for (Field field : param.getClass().getDeclaredFields()) {
+                            field.setAccessible(true);
+                            if (tokenData.containsKey(field.getName())) {
+                                try {
+                                    field.set(param, tokenData.get(field.getName()));
+                                } catch (IllegalAccessException e) {
+                                    log.warn("鉴权参数设置失败,字段:{} 值:{}", field.getName(), tokenData.get(field.getName()));
                                 }
                             }
                         }
