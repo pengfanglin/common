@@ -87,19 +87,20 @@ public class SmsUtils {
             OthersUtils.specialUrlEncode("/") + "&" +
             OthersUtils.specialUrlEncode(sortQueryStringTmp.substring(1));
         String sign = sign(smsProperties.getAli().getAccessSecret() + "&", sb);
+        JsonNode jsonNode;
         try {
             String result = HttpUtils.post(ALI_URL + "?Signature=" + OthersUtils.specialUrlEncode(sign), sortParams);
-            JsonNode jsonNode = objectMapper.readTree(result);
-            String okStatus = "OK";
-            if (okStatus.equals(jsonNode.findValue("Code").textValue())) {
-                return jsonNode.findValue("BizId").textValue();
-            } else {
-                log.warn("短信发送失败:" + jsonNode.findValue("Message").textValue());
-                throw new BusinessException("短信发送失败:" + jsonNode.findValue("Message").textValue());
-            }
+            jsonNode = objectMapper.readTree(result);
         } catch (Exception e) {
-            log.warn("短信发送失败:{}", e.getMessage());
-            throw new BusinessException("短信发送失败:" + e.getMessage());
+            log.warn("短信返回格式不是json:{}", e.getMessage());
+            throw new BusinessException("短信返回格式不是json:" + e.getMessage());
+        }
+        String okStatus = "OK";
+        if (okStatus.equals(jsonNode.findValue("Code").textValue())) {
+            return jsonNode.findValue("BizId").textValue();
+        } else {
+            log.warn("短信发送失败:" + jsonNode.findValue("Message").textValue());
+            throw new BusinessException(jsonNode.findValue("Message").textValue());
         }
     }
 
