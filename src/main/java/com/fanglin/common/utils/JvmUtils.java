@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.lang.management.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,16 +21,58 @@ import java.util.List;
  **/
 public class JvmUtils {
 
+    /**
+     * 查看jvm信息
+     * @return
+     */
     public static JvmInfo jvmInfo() {
         return new JvmInfo(
             osInfo(),
             memoryInfo(),
             memoryPoolInfo(),
             processInfo(),
-            threadInfo()
+            threadInfo(),
+            classInfo(),
+            garbageCollectorInfo()
         );
     }
 
+    /**
+     * 垃圾收集器信息
+     * @return
+     */
+    public static List<GarbageCollectorInfo> garbageCollectorInfo() {
+        List<GarbageCollectorMXBean> gcbList = ManagementFactory.getGarbageCollectorMXBeans();
+        List<GarbageCollectorInfo> infos = new ArrayList<>(gcbList.size());
+        for (GarbageCollectorMXBean gcb : gcbList) {
+            infos.add(
+                new GarbageCollectorInfo(
+                    gcb.getCollectionCount(),
+                    TimeUtils.friendTime(gcb.getCollectionTime()),
+                    gcb.getName()
+                )
+            );
+        }
+        return infos;
+    }
+
+    /**
+     * 类加载信息
+     * @return
+     */
+    public static ClassInfo classInfo() {
+        ClassLoadingMXBean clb = ManagementFactory.getClassLoadingMXBean();
+        return new ClassInfo(
+            clb.getTotalLoadedClassCount(),
+            clb.getLoadedClassCount(),
+            clb.getUnloadedClassCount()
+        );
+    }
+
+    /**
+     * 操作系统信息
+     * @return
+     */
     public static OsInfo osInfo() {
         OperatingSystemMXBean osb = ManagementFactory.getOperatingSystemMXBean();
         return new OsInfo(
@@ -41,6 +84,10 @@ public class JvmUtils {
         );
     }
 
+    /**
+     * 进程信息
+     * @return
+     */
     public static ProcessInfo processInfo() {
         RuntimeMXBean mxb = ManagementFactory.getRuntimeMXBean();
         return new ProcessInfo(
@@ -52,11 +99,15 @@ public class JvmUtils {
             mxb.getSpecVendor(),
             mxb.getSpecVersion(),
             mxb.getManagementSpecVersion(),
-            buildUptime(mxb.getStartTime()),
+            TimeUtils.friendTime(System.currentTimeMillis()-mxb.getStartTime()),
             TimeUtils.getSimpleDateFormat().format(new Date(mxb.getStartTime()))
         );
     }
 
+    /**
+     * 内存信息
+     * @return
+     */
     public static MemoryInfo memoryInfo() {
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         return new MemoryInfo(
@@ -66,10 +117,20 @@ public class JvmUtils {
         );
     }
 
+    /**
+     * 格式化内存大小
+     * @param size
+     * @return
+     */
     private static String formatMemorySize(long size) {
         return size / 1024 / 1024 + "MB";
     }
 
+    /**
+     * 将系统内存使用信息转换为自定义内存使用信息
+     * @param memoryUsage
+     * @return
+     */
     private static MemoryUsage conversionMemoryUsage(java.lang.management.MemoryUsage memoryUsage) {
         return new MemoryUsage(
             formatMemorySize(memoryUsage.getInit()),
@@ -79,6 +140,10 @@ public class JvmUtils {
         );
     }
 
+    /**
+     * 内存池信息
+     * @return
+     */
     public static MemoryPoolInfo[] memoryPoolInfo() {
         List<MemoryPoolMXBean> pools = ManagementFactory.getMemoryPoolMXBeans();
         MemoryPoolInfo[] memoryPoolInfos = new MemoryPoolInfo[pools.size()];
@@ -106,6 +171,10 @@ public class JvmUtils {
         return memoryPoolInfos;
     }
 
+    /**
+     * 线程信息
+     * @return
+     */
     public static ThreadInfo threadInfo() {
         ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
         return new ThreadInfo(
@@ -130,6 +199,12 @@ public class JvmUtils {
         );
     }
 
+    /**
+     * 查找线程的详细信息
+     * @param tmx
+     * @param ids
+     * @return
+     */
     private static ThreadDetail[] findThreadDetails(ThreadMXBean tmx, long[] ids) {
         if (ids == null || ids.length == 0) {
             return null;
@@ -163,6 +238,11 @@ public class JvmUtils {
         return threadDetails;
     }
 
+    /**
+     * 转换监视器信息
+     * @param monitors
+     * @return
+     */
     private static MonitorInfo[] buildMonitors(java.lang.management.MonitorInfo[] monitors) {
         MonitorInfo[] monitorInfos = new MonitorInfo[monitors.length];
         for (int i = 0; i < monitors.length; i++) {
@@ -175,6 +255,11 @@ public class JvmUtils {
         return monitorInfos;
     }
 
+    /**
+     * 转换锁信息
+     * @param locks
+     * @return
+     */
     private static LockInfo[] buildLockInfos(java.lang.management.LockInfo[] locks) {
         LockInfo[] lockInfos = new LockInfo[locks.length];
         for (int i = 0; i < locks.length; i++) {
@@ -187,6 +272,11 @@ public class JvmUtils {
         return lockInfos;
     }
 
+    /**
+     * 转换堆栈信息
+     * @param element
+     * @return
+     */
     private static StackTraceElement buildStackTraceElement(java.lang.StackTraceElement element) {
         return new StackTraceElement(
             element.getClassName(),
@@ -194,16 +284,6 @@ public class JvmUtils {
             element.getFileName(),
             element.getLineNumber()
         );
-    }
-
-    private static String buildUptime(long time) {
-        //两时间差,精确到毫秒
-        long diff = System.currentTimeMillis() - time;
-        long day = diff / 86400000;
-        long hour = diff % 86400000 / 3600000;
-        long min = diff % 86400000 % 3600000 / 60000;
-        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;
-        return String.format("%s天%s小时%s分%s秒", day, hour, min, seconds);
     }
 
     @Setter
@@ -222,6 +302,39 @@ public class JvmUtils {
         ProcessInfo processInfo;
         @ApiModelProperty("线程信息")
         ThreadInfo threadInfo;
+        @ApiModelProperty("类加载信息")
+        ClassInfo classInfo;
+        @ApiModelProperty("垃圾收集器信息")
+        List<GarbageCollectorInfo> garbageCollectorInfos;
+    }
+
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel("垃圾收集器信息")
+    public static class GarbageCollectorInfo {
+        @ApiModelProperty("收集次数")
+        private long collectionCount;
+        @ApiModelProperty("收集总耗时")
+        private String collectionTime;
+        @ApiModelProperty("内存区域名称")
+        private String name;
+    }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel("class加载信息")
+    public static class ClassInfo {
+        @ApiModelProperty("总加载类数量")
+        private long totalLoadedClassCount;
+        @ApiModelProperty("已加载类数量")
+        private int loadedClassCount;
+        @ApiModelProperty("未加载类数量")
+        private long unloadedClassCount;
     }
 
     @Setter

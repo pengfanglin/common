@@ -216,4 +216,18 @@ public class TimeUtils {
     public static String getCurrentDate() {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
+
+    /**
+     * 格式化为友好的时间
+     * @param time 毫秒数
+     * @return
+     */
+    public static String friendTime(long time) {
+        long day = time / 86400000;
+        long hour = time % 86400000 / 3600000;
+        long min = time % 86400000 % 3600000 / 60000;
+        long seconds = time % 86400000 % 3600000 % 60000 / 1000;
+        long ms = time % 86400000 % 3600000 % 60000 % 1000;
+        return String.format("%s天%s小时%s分%s秒%s毫秒", day, hour, min, seconds, ms);
+    }
 }
