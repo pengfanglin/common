@@ -2,6 +2,9 @@ package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.LocalCache;
 import com.fanglin.common.annotation.LocalCacheRemove;
+import com.fanglin.common.utils.MemoryUtils;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,8 +17,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 本地缓存切面类，首先从缓存中取数据，数据存在返回缓存数据，否则去数据库取
@@ -75,6 +81,28 @@ public class LocalCacheAop extends CacheAop {
     }
 
     /**
+     * 获取缓存的状态信息
+     *
+     * @param showValue
+     * @return
+     */
+    public static CacheInfo cacheInfo(Boolean showValue) {
+        List<KeyInfo> keys = new ArrayList<>(cache.size());
+        AtomicLong totalMemory = new AtomicLong();
+        cache.forEach((key, value) -> {
+            KeyInfo keyInfo = new KeyInfo(key, value.getOverdueTime(), value.getOverdueTime() - System.currentTimeMillis(), null, null);
+            if (showValue != null && showValue) {
+                keyInfo.setValue(value.getData());
+            }
+            long memory = MemoryUtils.sizeOfObject(value.getData());
+            keyInfo.setMemorySize(MemoryUtils.format(memory));
+            totalMemory.addAndGet(memory);
+            keys.add(keyInfo);
+        });
+        return new CacheInfo(keys.size(), MemoryUtils.format(totalMemory.longValue()), keys);
+    }
+
+    /**
      * 切入的验证代码
      */
     @AfterReturning(value = "pointLocalCacheRemove()")
@@ -93,6 +121,38 @@ public class LocalCacheAop extends CacheAop {
     public static class CacheData {
         private Object data;
         private long overdueTime;
+    }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel("缓存信息")
+    public static class CacheInfo {
+        @ApiModelProperty("key数量")
+        private int size;
+        @ApiModelProperty("内存占用")
+        private String memorySize;
+        @ApiModelProperty("key信息")
+        private List<KeyInfo> keys;
+    }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel("key信息")
+    public static class KeyInfo {
+        @ApiModelProperty("key名称")
+        private String key;
+        @ApiModelProperty("过期时间")
+        private long timeout;
+        @ApiModelProperty("剩余时间")
+        private long ttl;
+        @ApiModelProperty("内存占用")
+        private String memorySize;
+        @ApiModelProperty("key的值")
+        private Object value;
     }
 }
 
