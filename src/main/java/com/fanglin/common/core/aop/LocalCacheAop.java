@@ -90,7 +90,7 @@ public class LocalCacheAop extends CacheAop {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    class CacheData {
+    public static class CacheData {
         private Object data;
         private long overdueTime;
     }
