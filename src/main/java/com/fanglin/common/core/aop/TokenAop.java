@@ -55,6 +55,7 @@ public class TokenAop {
             return true;
         }
         String sessionId = this.getSessionId(request);
+        log.debug(sessionId);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
             String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), token.value(), sessionId);
@@ -62,6 +63,7 @@ public class TokenAop {
             try (Jedis jedis = JedisUtils.getJedis()) {
                 redisToken = jedis.get(key);
             }
+            log.debug("{} {}", key, sessionId);
             if (OthersUtils.notEmpty(redisToken)) {
                 Map tokenData = JsonUtils.jsonToObject(redisToken, Map.class);
                 pass = true;
@@ -72,6 +74,7 @@ public class TokenAop {
                             if (tokenData.containsKey(field.getName())) {
                                 try {
                                     field.set(param, tokenData.get(field.getName()));
+                                    log.debug("注入参数:{}",field.getName());
                                 } catch (IllegalAccessException e) {
                                     log.warn("鉴权参数设置失败,字段:{} 值:{}", field.getName(), tokenData.get(field.getName()));
                                 }
