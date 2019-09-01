@@ -19,6 +19,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class TokenInfo implements Serializable {
     /**
+     * 账号类型,区分不同的账号体系
+     */
+    private String type;
+    /**
      * 授权token
      */
     private String assessToken;

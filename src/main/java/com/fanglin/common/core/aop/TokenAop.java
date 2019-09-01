@@ -1,6 +1,7 @@
 package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.Token;
+import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.others.Ajax;
 import com.fanglin.common.core.token.DefaultTokenData;
 import com.fanglin.common.utils.JedisUtils;
@@ -56,7 +57,7 @@ public class TokenAop {
         String sessionId = this.getSessionId(request);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
-            String key = "assess_token:" + sessionId;
+            String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), token.value(), sessionId);
             String redisToken;
             try (Jedis jedis = JedisUtils.getJedis()) {
                 redisToken = jedis.get(key);

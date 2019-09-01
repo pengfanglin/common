@@ -15,4 +15,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Token {
+    /**
+     * 业务类型，用于区分不同的账号体系
+     * @return
+     */
+    String value() default "default";
 }

@@ -1,6 +1,6 @@
 package com.fanglin.common.utils;
 
-
+import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.token.TokenInfo;
 import redis.clients.jedis.Jedis;
 
@@ -25,6 +25,9 @@ public class TokenUtils {
      * @return
      */
     public static TokenInfo login(HttpServletResponse response, TokenInfo tokenInfo) {
+        if (tokenInfo.getType() == null) {
+            tokenInfo.setType("default");
+        }
         String assessToken = UUID.randomUUID().toString();
         String refreshToken = UUID.randomUUID().toString();
         //生成token
@@ -37,13 +40,14 @@ public class TokenUtils {
         Cookie refreshCookie = new Cookie("REFRESH_TOKEN", assessToken);
         refreshCookie.setPath("/");
         try (Jedis jedis = JedisUtils.getJedis()) {
-            setAssessToken(tokenInfo, assessToken, assessCookie, jedis);
+            setAssessToken(tokenInfo, assessCookie, jedis);
             //刷新token
+            String key = String.format("%s:%s:%s", TokenKeyEnum.REFRESH_TOKEN.getKey(), tokenInfo.getType(), refreshToken);
             if (tokenInfo.getRefreshTokenTimeout() < 0) {
-                jedis.set("refresh_token:" + refreshToken, "");
-            } else {
+                jedis.set(key, "");
+            } else if (tokenInfo.getRefreshTokenTimeout() > 0) {
                 refreshCookie.setMaxAge((int) tokenInfo.getRefreshTokenTimeout());
-                jedis.set("refresh_token:" + refreshToken, "", "ex", tokenInfo.getRefreshTokenTimeout());
+                jedis.set(key, "", "ex", tokenInfo.getRefreshTokenTimeout());
             }
         }
         response.addCookie(assessCookie);
@@ -59,13 +63,14 @@ public class TokenUtils {
      * @param assessCookie
      * @param jedis
      */
-    private static void setAssessToken(TokenInfo tokenInfo, String assessToken, Cookie assessCookie, Jedis jedis) {
+    private static void setAssessToken(TokenInfo tokenInfo, Cookie assessCookie, Jedis jedis) {
         String authData = tokenInfo.getData() == null ? null : JsonUtils.objectToJson(tokenInfo.getData());
+        String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), tokenInfo.getType(), tokenInfo.getAssessToken());
         if (tokenInfo.getAssessTokenTimeout() < 0) {
-            jedis.set("assess_token:" + assessToken, authData);
+            jedis.set(key, authData);
         } else {
             assessCookie.setMaxAge((int) tokenInfo.getAssessTokenTimeout());
-            jedis.set("assess_token:" + assessToken, authData, "ex", tokenInfo.getAssessTokenTimeout());
+            jedis.set(key, authData, "ex", tokenInfo.getAssessTokenTimeout());
         }
     }
 
@@ -85,7 +90,7 @@ public class TokenUtils {
         //cookie加入token
         Cookie assessCookie = new Cookie("AUTHORIZATION", assessToken);
         try (Jedis jedis = JedisUtils.getJedis()) {
-            setAssessToken(tokenInfo, assessToken, assessCookie, jedis);
+            setAssessToken(tokenInfo, assessCookie, jedis);
         }
         response.addCookie(assessCookie);
         return tokenInfo;
