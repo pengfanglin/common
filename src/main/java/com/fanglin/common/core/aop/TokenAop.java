@@ -1,5 +1,6 @@
 package com.fanglin.common.core.aop;
 
+import com.fanglin.common.annotation.NoToken;
 import com.fanglin.common.annotation.Token;
 import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.others.Ajax;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -43,8 +45,9 @@ public class TokenAop {
      * @param point
      * @throws Throwable
      */
-    @Around(value = "execution(@com.fanglin.common.annotation.Token * *.*(..)) && @annotation(token)")
+    @Around(value = "@annotation(token)")
     public Object startTransaction(ProceedingJoinPoint point, Token token) throws Throwable {
+        log.info("进入方法");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         //自定义请求头的请求，浏览器会首先发送一个OPTIONS类型的请求，对于该类请求直接返回200成功，否则后续真实请求不会发送
@@ -74,7 +77,7 @@ public class TokenAop {
                             if (tokenData.containsKey(field.getName())) {
                                 try {
                                     field.set(param, tokenData.get(field.getName()));
-                                    log.debug("注入参数:{}",field.getName());
+                                    log.debug("注入参数:{}", field.getName());
                                 } catch (IllegalAccessException e) {
                                     log.warn("鉴权参数设置失败,字段:{} 值:{}", field.getName(), tokenData.get(field.getName()));
                                 }
