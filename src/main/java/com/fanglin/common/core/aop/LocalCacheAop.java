@@ -11,7 +11,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
@@ -39,29 +38,12 @@ public class LocalCacheAop extends CacheAop {
     private static Map<String, CacheData> cache = new ConcurrentHashMap<>();
 
     /**
-     * LocalCache切入点规则
-     */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.LocalCache)")
-    public void pointLocalCache() {
-
-    }
-
-    /**
-     * LocalCacheRemove切入点规则
-     */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.LocalCacheRemove)")
-    public void pointLocalCacheRemove() {
-
-    }
-
-    /**
      * 切入的验证代码
      */
-    @Around(value = "pointLocalCache()")
-    public Object localCacheAop(ProceedingJoinPoint point) throws Throwable {
+    @Around("@annotation(localCache)")
+    public Object localCacheAop(ProceedingJoinPoint point,LocalCache localCache) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) point.getSignature();
         Method method = joinPointObject.getMethod();
-        LocalCache localCache = method.getAnnotation(LocalCache.class);
         long timeout = localCache.timeout();
         String key = getCacheKey(method, point.getArgs(), localCache.value());
         CacheData cacheData = cache.get(key);
@@ -105,11 +87,10 @@ public class LocalCacheAop extends CacheAop {
     /**
      * 切入的验证代码
      */
-    @AfterReturning(value = "pointLocalCacheRemove()")
-    public void localCacheRemoveAop(JoinPoint point) {
+    @AfterReturning("@annotation(localCacheRemove)")
+    public void localCacheRemoveAop(JoinPoint point,LocalCacheRemove localCacheRemove) {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        LocalCacheRemove localCacheRemove = method.getAnnotation(LocalCacheRemove.class);
         String key = getCacheKey(method, point.getArgs(), localCacheRemove.value());
         cache.remove(key);
     }

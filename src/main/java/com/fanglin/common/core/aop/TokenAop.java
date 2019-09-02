@@ -1,6 +1,5 @@
 package com.fanglin.common.core.aop;
 
-import com.fanglin.common.annotation.NoToken;
 import com.fanglin.common.annotation.Token;
 import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.others.Ajax;
@@ -10,9 +9,10 @@ import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -40,16 +40,30 @@ import java.util.Map;
 public class TokenAop {
 
     /**
-     * 切入的验证代码
+     * (类带有Token注解 and 方法不带NoToken注解) or 方法带有Token注解
      *
      * @param point
      * @throws Throwable
      */
-    @Around(value = "@annotation(token)")
-    public Object startTransaction(ProceedingJoinPoint point, Token token) throws Throwable {
-        log.info("进入方法");
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+    @Around(value = "(@within(com.fanglin.common.annotation.Token)&&!@annotation(com.fanglin.common.annotation.NoToken))||@annotation(com.fanglin.common.annotation.Token)")
+    public Object startTransaction(ProceedingJoinPoint point) throws Throwable {
+        Signature signature = point.getSignature();
+        //类上的鉴权注解
+        Token classToken = point.getTarget().getClass().getAnnotation(Token.class);
+        MethodSignature methodSignature = (MethodSignature) signature;
+        //方法上的鉴权注解
+        Token methodToken = methodSignature.getMethod().getAnnotation(Token.class);
+        //类和方法都存在鉴权注解时，以方法鉴权注解值为主
+        String type = methodToken == null ? classToken.value() : methodToken.value();
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletResponse response;
+        HttpServletRequest request;
+        if (requestAttributes != null) {
+            request = requestAttributes.getRequest();
+            response = requestAttributes.getResponse();
+        } else {
+            return Ajax.error("Servlet请求属性初始化失败");
+        }
         //自定义请求头的请求，浏览器会首先发送一个OPTIONS类型的请求，对于该类请求直接返回200成功，否则后续真实请求不会发送
         if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
             if (response != null) {
@@ -61,7 +75,7 @@ public class TokenAop {
         log.debug(sessionId);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
-            String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), token.value(), sessionId);
+            String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), type, sessionId);
             String redisToken;
             try (Jedis jedis = JedisUtils.getJedis()) {
                 redisToken = jedis.get(key);

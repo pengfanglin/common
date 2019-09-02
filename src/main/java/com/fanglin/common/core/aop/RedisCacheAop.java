@@ -8,7 +8,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -34,29 +33,12 @@ public class RedisCacheAop extends CacheAop {
     JedisPool jedisPool;
 
     /**
-     * redisCache切入点规则
-     */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.RedisCache)")
-    public void pointRedisCache() {
-
-    }
-
-    /**
-     * redisCacheRemove切入点规则
-     */
-    @Pointcut(value = "@annotation(com.fanglin.common.annotation.RedisCacheRemove)")
-    public void pointRedisCacheRemove() {
-
-    }
-
-    /**
      * 切入的验证代码
      */
-    @Around(value = "pointRedisCache()")
-    public Object localCacheAop(ProceedingJoinPoint point) throws Throwable {
+    @Around("@annotation(redisCache)")
+    public Object localCacheAop(ProceedingJoinPoint point,RedisCache redisCache) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) point.getSignature();
         Method method = joinPointObject.getMethod();
-        RedisCache redisCache = method.getAnnotation(RedisCache.class);
         String key = getCacheKey(method, point.getArgs(), redisCache.value());
         long timeout = redisCache.timeout();
         try (Jedis jedis = jedisPool.getResource()) {
@@ -81,11 +63,10 @@ public class RedisCacheAop extends CacheAop {
     /**
      * 切入的验证代码
      */
-    @AfterReturning(value = "pointRedisCacheRemove()")
-    public void localCacheRemoveAop(JoinPoint point) {
+    @AfterReturning("@annotation(redisCacheRemove)")
+    public void localCacheRemoveAop(JoinPoint point,RedisCacheRemove redisCacheRemove) {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        RedisCacheRemove redisCacheRemove = method.getAnnotation(RedisCacheRemove.class);
         String key = getCacheKey(method, point.getArgs(), redisCacheRemove.value());
         Jedis jedis = jedisPool.getResource();
         jedis.del(key);
