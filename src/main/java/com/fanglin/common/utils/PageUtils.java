@@ -13,7 +13,7 @@ import org.apache.ibatis.session.RowBounds;
  * @date 2019/8/13 11:26
  **/
 public class PageUtils {
- 
+
     /**
      * 只分页不求总条数
      *

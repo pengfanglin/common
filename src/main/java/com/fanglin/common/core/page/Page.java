@@ -1,6 +1,9 @@
 package com.fanglin.common.core.page;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -12,8 +15,11 @@ import java.io.Serializable;
  * @date 2019/4/2 17:55
  **/
 @Getter
+@ApiModel("分页对象")
 public class Page implements Serializable {
+    @ApiModelProperty("当前第几页")
     private Integer page;
+    @ApiModelProperty("一页多少条")
     private Integer limit;
 
     public Page() {
