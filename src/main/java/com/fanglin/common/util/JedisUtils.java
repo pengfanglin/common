@@ -25,7 +25,7 @@ public class JedisUtils {
         if (jedisPool == null) {
             log.warn("未配置JedisPool,JedisUtils不可用");
         } else {
-            log.info("JedisUtils配置成功");
+            log.debug("JedisUtils配置成功");
         }
         JedisUtils.jedisPool = jedisPool;
     }

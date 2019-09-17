@@ -24,7 +24,7 @@ public class SpringUtils implements ApplicationContextAware {
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        log.info("SpringUtils配置成功");
+        log.debug("SpringUtils配置成功");
         SpringUtils.applicationContext = applicationContext;
     }
 

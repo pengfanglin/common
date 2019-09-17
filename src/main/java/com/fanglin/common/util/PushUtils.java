@@ -31,7 +31,7 @@ public class PushUtils {
 
     @Autowired
     public PushUtils(ObjectMapper objectMapper, AuroraPushProperties jAuroraPushProperties) {
-        log.info("极光推送配置成功");
+        log.debug("极光推送配置成功");
         PushUtils.objectMapper = objectMapper;
         PushUtils.jAuroraPushProperties = jAuroraPushProperties;
     }

@@ -26,7 +26,7 @@ public class JsonUtils {
     private static ObjectMapper objectMapper = null;
 
     public JsonUtils(ObjectMapper objectMapper) {
-        log.info("JsonUtils配置成功");
+        log.debug("JsonUtils配置成功");
         JsonUtils.objectMapper = objectMapper;
     }
 

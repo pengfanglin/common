@@ -26,7 +26,7 @@ public class ValidatorUtils {
     private static Validator validator;
 
     public ValidatorUtils(Validator validator) {
-        log.info("ValidatorUtils配置成功");
+        log.debug("ValidatorUtils配置成功");
         ValidatorUtils.validator = validator;
     }
 

@@ -55,7 +55,7 @@ public class HttpUtils {
         @Autowired(required = false) CloseableHttpClient wxHttpClient,
         @Autowired(required = false) CloseableHttpClient wxPubHttpClient
     ) {
-        log.info("HttpUtils配置成功");
+        log.debug("HttpUtils配置成功");
         HttpUtils.httpClient = httpClient;
         HttpUtils.wxHttpClient = wxHttpClient;
         HttpUtils.wxPubHttpClient = wxPubHttpClient;
