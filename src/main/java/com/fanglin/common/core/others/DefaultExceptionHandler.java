@@ -128,7 +128,7 @@ public class DefaultExceptionHandler {
     @ResponseBody
     public Ajax handleException(Exception e, HttpServletRequest request) {
         if (pro) {
-            log.warn("异常原因:{},请求参数:{}", e.getMessage(), JsonUtils.objectToJson(OthersUtils.readRequestParams(request)));
+            log.warn("异常原因:{},请求参数:{}", e.getMessage(), JsonUtils.toJson(OthersUtils.readRequestParams(request)));
         } else {
             e.printStackTrace();
         }

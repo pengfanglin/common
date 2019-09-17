@@ -64,7 +64,7 @@ public class TokenUtils {
      * @param jedis
      */
     private static void setAssessToken(TokenInfo tokenInfo, Cookie assessCookie, Jedis jedis) {
-        String authData = tokenInfo.getData() == null ? null : JsonUtils.objectToJson(tokenInfo.getData());
+        String authData = tokenInfo.getData() == null ? null : JsonUtils.toJson(tokenInfo.getData());
         String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), tokenInfo.getType(), tokenInfo.getAssessToken());
         if (tokenInfo.getAssessTokenTimeout() < 0) {
             jedis.set(key, authData);

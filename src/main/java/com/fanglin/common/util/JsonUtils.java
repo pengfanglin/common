@@ -33,7 +33,7 @@ public class JsonUtils {
     /**
      * 将集合类型json字符串转换为java对象
      */
-    public static <T> T jsonToList(String json, Class<T> elementClass) {
+    public static <T> T toList(String json, Class<T> elementClass) {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, elementClass);
         try {
             return objectMapper.readValue(json, javaType);
@@ -46,7 +46,7 @@ public class JsonUtils {
     /**
      * 简单json对象序列化为java对象
      */
-    public static <T> T jsonToObject(String json, Class<T> elementClass) {
+    public static <T> T toObject(String json, Class<T> elementClass) {
         try {
             return objectMapper.readValue(json, elementClass);
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class JsonUtils {
     /**
      * 简单java对象转json
      */
-    public static String objectToJson(Object object) {
+    public static String toJson(Object object) {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (IOException e) {

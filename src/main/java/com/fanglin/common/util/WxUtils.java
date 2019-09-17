@@ -52,7 +52,7 @@ public class WxUtils {
             params.put("accessToken", accessToken);
             params.put("type", JS_API_TICKET_TYPE);
             String result = HttpUtils.get(JS_API_TICKET_URL, params);
-            Wx wx = JsonUtils.jsonToObject(result, Wx.class);
+            Wx wx = JsonUtils.toObject(result, Wx.class);
             if (wx.getErrCode() == 0) {
                 jsApiTicket = wx.getTicket();
                 JedisUtils.set("wx_access_token", jsApiTicket, "NX", "EX", 7000);
@@ -77,7 +77,7 @@ public class WxUtils {
             params.put("secret", wxProperties.getSecret());
             params.put("grant_type", ACCESS_TOKEN_GRANT_TYPE);
             String result = HttpUtils.get(ACCESS_TOKEN, params);
-            Wx wx = JsonUtils.jsonToObject(result, Wx.class);
+            Wx wx = JsonUtils.toObject(result, Wx.class);
             if (wx.getAccessToken() != null) {
                 accessToken = wx.getAccessToken();
                 JedisUtils.set("wx_access_token", accessToken, "NX", "EX", 7000);
@@ -102,7 +102,7 @@ public class WxUtils {
         params.put("code", code);
         params.put("grant_type", ACCESS_TOKEN_BY_CODE_GRANT_TYPE);
         String str = HttpUtils.post(ACCESS_TOKEN_BY_CODE_URL, params);
-        Wx wxBean = JsonUtils.jsonToObject(str, Wx.class);
+        Wx wxBean = JsonUtils.toObject(str, Wx.class);
         return getUserInfoByOpenId(wxBean.getAccessToken(), wxBean.getOpenid());
     }
 
@@ -119,7 +119,7 @@ public class WxUtils {
         params.put("openid", openId);
         params.put("lang", LANG);
         String result = HttpUtils.post(USER_INFO_URL, params);
-        Wx wx = JsonUtils.jsonToObject(result, Wx.class);
+        Wx wx = JsonUtils.toObject(result, Wx.class);
         if (wx.getErrCode() == 0) {
             return wx;
         } else {

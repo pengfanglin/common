@@ -81,7 +81,7 @@ public class TokenAop {
             }
             log.debug("{} {}", key, sessionId);
             if (OthersUtils.notEmpty(redisToken)) {
-                Map tokenData = JsonUtils.jsonToObject(redisToken, Map.class);
+                Map tokenData = JsonUtils.toObject(redisToken, Map.class);
                 pass = true;
                 for (Object param : point.getArgs()) {
                     if (param instanceof DefaultTokenData) {
