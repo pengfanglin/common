@@ -29,7 +29,7 @@ public class MybatisConfig {
     @Bean
     @ConditionalOnClass(tk.mybatis.mapper.autoconfigure.ConfigurationCustomizer.class)
     public tk.mybatis.mapper.autoconfigure.ConfigurationCustomizer tkConfigurationCustomizer() {
-        log.info("tkMapper Map转换器配置成功");
+        log.debug("tkMapper Map转换器配置成功");
         return configuration -> configuration.setObjectWrapperFactory(new MapWrapperFactory());
     }
 
@@ -39,7 +39,7 @@ public class MybatisConfig {
     @Bean
     @ConditionalOnClass(ConfigurationCustomizer.class)
     public ConfigurationCustomizer mybatisConfigurationCustomizer() {
-        log.info("mybatis Map转换器配置成功");
+        log.debug("mybatis Map转换器配置成功");
         return configuration -> configuration.setObjectWrapperFactory(new MapWrapperFactory());
     }
 

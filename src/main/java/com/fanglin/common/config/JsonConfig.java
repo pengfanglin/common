@@ -47,7 +47,7 @@ public class JsonConfig {
     @ConditionalOnProperty(name = "common.jackson", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper objectMapper() {
-        log.info("ObjectMapper配置成功");
+        log.debug("ObjectMapper配置成功");
         return baseObjectMapper();
     }
 
@@ -58,7 +58,7 @@ public class JsonConfig {
     @ConditionalOnProperty(name = "common.ajax-jackson", havingValue = "true")
     @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper ajaxObjectMapper(AjaxSerializerModifier ajaxSerializerModifier) {
-        log.info("AjaxObjectMapper配置成功");
+        log.debug("AjaxObjectMapper配置成功");
         ObjectMapper objectMapper = baseObjectMapper();
         // 为mapper注册一个带有SerializerModifier的Factory，针对值为null的字段进行特殊处理
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(ajaxSerializerModifier));

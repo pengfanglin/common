@@ -2,7 +2,8 @@ package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.RedisCache;
 import com.fanglin.common.annotation.RedisCacheRemove;
-import com.fanglin.common.utils.OthersUtils;
+import com.fanglin.common.util.OthersUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -27,6 +28,7 @@ import java.lang.reflect.Method;
 @Component
 @Aspect()
 @ConditionalOnClass({Aspect.class, JedisPool.class})
+@Slf4j
 public class RedisCacheAop extends CacheAop {
 
     @Autowired(required = false)
@@ -40,6 +42,7 @@ public class RedisCacheAop extends CacheAop {
         MethodSignature joinPointObject = (MethodSignature) point.getSignature();
         Method method = joinPointObject.getMethod();
         String key = getCacheKey(method, point.getArgs(), redisCache.value());
+        log.debug("redisCache key:{}", key);
         long timeout = redisCache.timeout();
         try (Jedis jedis = jedisPool.getResource()) {
             byte[] cacheData = jedis.get(key.getBytes());

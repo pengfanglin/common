@@ -36,7 +36,7 @@ public class ZipkinConfig {
 
     @Bean
     public Tracing tracing() {
-        log.info("zipkin链路追踪配置成功,参数:{}", zipkinProperties);
+        log.debug("zipkin链路追踪配置成功");
         Sender sender = OkHttpSender.create(zipkinProperties.getAddress());
         //使用异步发送，不影响业务性能
         AsyncReporter<Span> reporter = AsyncReporter.builder(sender)

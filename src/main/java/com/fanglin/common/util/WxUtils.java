@@ -1,4 +1,4 @@
-package com.fanglin.common.utils;
+package com.fanglin.common.util;
 
 import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.core.others.Wx;
@@ -6,7 +6,6 @@ import com.fanglin.common.properties.WxProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.io.UnsupportedEncodingException;

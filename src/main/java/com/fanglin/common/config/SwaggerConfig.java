@@ -35,7 +35,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket createRestApi() {
-        log.info("swagger配置成功");
+        log.debug("swagger配置成功");
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
             .select()

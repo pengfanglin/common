@@ -1,4 +1,4 @@
-package com.fanglin.common.utils;
+package com.fanglin.common.util;
 
 import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.token.TokenInfo;

@@ -37,7 +37,7 @@ import java.util.Objects;
 public class RedisConfig {
 
     public RedisConfig() {
-        log.info("springRedis配置成功");
+        log.debug("springRedis配置成功");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.fanglin.common.config;
 
 import com.fanglin.common.properties.CrossProperties;
+import com.fanglin.common.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -33,7 +34,7 @@ public class CrossConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
-        log.info("跨域支持过滤器配置成功,参数:{}", crossProperties);
+        log.debug("跨域支持过滤器配置成功");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         //允许cookie跨域

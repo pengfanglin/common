@@ -180,11 +180,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
                 return "";
             }
         } else {
-            try {
-                return URLDecoder.decode(value, UTF_8);
-            } catch (UnsupportedEncodingException e) {
-                return "";
-            }
+            return value;
         }
     }
 }

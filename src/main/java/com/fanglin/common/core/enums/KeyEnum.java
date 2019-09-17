@@ -19,7 +19,7 @@ public interface KeyEnum {
      * 根据枚举值查找对应的枚举类
      *
      * @param enumClass 枚举类
-     * @param code      枚举值
+     * @param key       值
      * @param <E>
      * @return
      */

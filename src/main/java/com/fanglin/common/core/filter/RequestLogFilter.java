@@ -2,7 +2,7 @@ package com.fanglin.common.core.filter;
 
 import com.fanglin.common.properties.CommonProperties;
 import com.fanglin.common.properties.LogProperties;
-import com.fanglin.common.utils.OthersUtils;
+import com.fanglin.common.util.OthersUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

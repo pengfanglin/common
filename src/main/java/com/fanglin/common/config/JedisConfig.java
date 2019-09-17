@@ -28,7 +28,7 @@ public class JedisConfig {
 
     @Bean
     public JedisPool redisPoolFactory() {
-        log.info("JedisPool配置成功,参数:{}", jedisProperties);
+        log.debug("JedisPool配置成功");
         return new JedisPool(jedisPoolConfig(), jedisProperties.getHost(), jedisProperties.getPort(), jedisProperties.getTimeout(), jedisProperties.getPassword(), jedisProperties.getDatabase());
     }
 

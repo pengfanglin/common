@@ -1,4 +1,4 @@
-package com.fanglin.common.utils;
+package com.fanglin.common.util;
 
 import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.properties.AuroraPushProperties;

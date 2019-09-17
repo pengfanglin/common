@@ -29,7 +29,7 @@ public class HttpMessageConverterConfig {
     @ConditionalOnProperty(name = "common.mvc-converter", havingValue = "true", matchIfMissing = true)
     public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter(AjaxSerializerModifier ajaxSerializerModifier) {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
-        log.info("mvc序列化配置成功，时间序列化格式为:{}", dateFormat);
+        log.debug("mvc序列化配置成功，时间序列化格式为:{}", dateFormat);
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         //获取springMvc默认的objectMapper
         ObjectMapper objectMapper = converter.getObjectMapper();

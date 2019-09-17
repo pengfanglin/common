@@ -33,10 +33,10 @@ public class FilterConfig {
         LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
         LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
         if (requestProperties.isEnable()) {
-            log.info("请求参数日志打印开启成功,日志级别:{}", requestProperties.getLevel());
+            log.debug("请求参数日志打印开启成功,日志级别:{}", requestProperties.getLevel());
         }
         if (responseProperties.isEnable()) {
-            log.info("返回结果日志打印开启成功,日志级别:{}", responseProperties.getLevel());
+            log.debug("返回结果日志打印开启成功,日志级别:{}", responseProperties.getLevel());
         }
         FilterRegistrationBean<RequestLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(requestLogFilter);

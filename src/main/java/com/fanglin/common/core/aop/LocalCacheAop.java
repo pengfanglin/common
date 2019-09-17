@@ -2,10 +2,11 @@ package com.fanglin.common.core.aop;
 
 import com.fanglin.common.annotation.LocalCache;
 import com.fanglin.common.annotation.LocalCacheRemove;
-import com.fanglin.common.utils.MemoryUtils;
+import com.fanglin.common.util.MemoryUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Aspect()
 @ConditionalOnClass(Aspect.class)
+@Slf4j
 public class LocalCacheAop extends CacheAop {
     /**
      * 本地缓存仓库
@@ -41,11 +43,12 @@ public class LocalCacheAop extends CacheAop {
      * 切入的验证代码
      */
     @Around("@annotation(localCache)")
-    public Object localCacheAop(ProceedingJoinPoint point,LocalCache localCache) throws Throwable {
+    public Object localCacheAop(ProceedingJoinPoint point, LocalCache localCache) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) point.getSignature();
         Method method = joinPointObject.getMethod();
         long timeout = localCache.timeout();
         String key = getCacheKey(method, point.getArgs(), localCache.value());
+        log.debug("localCache key:{}", key);
         CacheData cacheData = cache.get(key);
         //本地缓存为空时或者用户设置了超时时间并且已经超时，需要重新加载数据
         boolean reload = cacheData == null || (cacheData.getOverdueTime() != -1 && cacheData.getOverdueTime() < System.currentTimeMillis());
@@ -58,6 +61,9 @@ public class LocalCacheAop extends CacheAop {
                 cacheData = new CacheData(result, timeout == -1 ? -1 : System.currentTimeMillis() + timeout);
                 cache.put(key, cacheData);
             }
+        }
+        if (cacheData == null) {
+            log.debug("key:{}未查询到结果", key);
         }
         return cacheData == null ? null : cacheData.getData();
     }
@@ -88,7 +94,7 @@ public class LocalCacheAop extends CacheAop {
      * 切入的验证代码
      */
     @AfterReturning("@annotation(localCacheRemove)")
-    public void localCacheRemoveAop(JoinPoint point,LocalCacheRemove localCacheRemove) {
+    public void localCacheRemoveAop(JoinPoint point, LocalCacheRemove localCacheRemove) {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
         String key = getCacheKey(method, point.getArgs(), localCacheRemove.value());

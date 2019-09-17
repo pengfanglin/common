@@ -4,9 +4,9 @@ import com.fanglin.common.annotation.Token;
 import com.fanglin.common.core.enums.TokenKeyEnum;
 import com.fanglin.common.core.others.Ajax;
 import com.fanglin.common.core.token.DefaultTokenData;
-import com.fanglin.common.utils.JedisUtils;
-import com.fanglin.common.utils.JsonUtils;
-import com.fanglin.common.utils.OthersUtils;
+import com.fanglin.common.util.JedisUtils;
+import com.fanglin.common.util.JsonUtils;
+import com.fanglin.common.util.OthersUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -72,7 +72,6 @@ public class TokenAop {
             return true;
         }
         String sessionId = this.getSessionId(request);
-        log.debug(sessionId);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
             String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), type, sessionId);
@@ -100,6 +99,8 @@ public class TokenAop {
                     }
                 }
             }
+        } else {
+            log.debug("授权头为空");
         }
         //验证通过，继续执行，否则返回token验证失败
         if (pass) {
@@ -120,6 +121,7 @@ public class TokenAop {
         } else {
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
+                log.debug("未获取到cookie");
                 return null;
             }
             for (Cookie cookie : cookies) {
