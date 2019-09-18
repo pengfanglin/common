@@ -33,7 +33,7 @@ public class JsonUtils {
     /**
      * 将集合类型json字符串转换为java对象
      */
-    public static <T> T toList(String json, Class<T> elementClass) {
+    public static <T> List<T> toList(String json, Class<T> elementClass) {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, elementClass);
         try {
             return objectMapper.readValue(json, javaType);
