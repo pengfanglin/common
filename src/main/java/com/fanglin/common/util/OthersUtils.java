@@ -115,9 +115,9 @@ public class OthersUtils {
                 int start = desc.indexOf("<content>");
                 int end = desc.indexOf("</content>");
                 if (start > 0 && end > 0) {
-                    style = style.replace("<content>", desc.substring(start + 9, end));
+                    style = desc;
                 } else {
-                    style = style.replace("<content>", desc);
+                    style = style.replace("<content>", "<content>" + desc);
                 }
             }
             byte[] tagBytes = style.getBytes();
