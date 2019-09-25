@@ -35,9 +35,9 @@ public class TokenUtils {
         //请求头加入token
         response.addHeader("AUTHORIZATION", assessToken);
         //cookie加入token
-        Cookie assessCookie = new Cookie("AUTHORIZATION", assessToken);
+        Cookie assessCookie = new Cookie(tokenInfo.getType() + "_AUTHORIZATION", assessToken);
         assessCookie.setPath("/");
-        Cookie refreshCookie = new Cookie("REFRESH_TOKEN", refreshToken);
+        Cookie refreshCookie = new Cookie(tokenInfo.getType() + "_REFRESH_TOKEN", refreshToken);
         refreshCookie.setPath("/");
         try (Jedis jedis = JedisUtils.getJedis()) {
             setAssessToken(tokenInfo, assessCookie, jedis);
@@ -88,7 +88,7 @@ public class TokenUtils {
         //请求头加入token
         response.addHeader("AUTHORIZATION", assessToken);
         //cookie加入token
-        Cookie assessCookie = new Cookie("AUTHORIZATION", assessToken);
+        Cookie assessCookie = new Cookie(tokenInfo.getType()+"_AUTHORIZATION", assessToken);
         try (Jedis jedis = JedisUtils.getJedis()) {
             setAssessToken(tokenInfo, assessCookie, jedis);
         }

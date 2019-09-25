@@ -71,7 +71,7 @@ public class TokenAop {
             }
             return true;
         }
-        String sessionId = this.getSessionId(request);
+        String sessionId = this.getSessionId(request, type);
         boolean pass = false;
         if (!OthersUtils.isEmpty(sessionId)) {
             String key = String.format("%s:%s:%s", TokenKeyEnum.ACCESS_TOKEN.getKey(), type, sessionId);
@@ -113,7 +113,7 @@ public class TokenAop {
     /**
      * 获取sessionId
      */
-    private String getSessionId(HttpServletRequest request) {
+    private String getSessionId(HttpServletRequest request, String type) {
         //如果请求头中有 Authorization 则其值为sessionId，否则从cookie中获取
         String sessionId = request.getHeader("AUTHORIZATION");
         if (OthersUtils.notEmpty(sessionId)) {
@@ -125,7 +125,7 @@ public class TokenAop {
                 return null;
             }
             for (Cookie cookie : cookies) {
-                if ("AUTHORIZATION".equals(cookie.getName())) {
+                if ((type + "_AUTHORIZATION").equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
