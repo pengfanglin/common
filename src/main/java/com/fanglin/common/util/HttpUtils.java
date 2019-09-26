@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -87,19 +87,16 @@ public class HttpUtils {
             response = httpClient.execute(httpGet);
             //如果返回值为空，或者返回状态码为空，代表请求失败，返回null
             if (response == null || response.getStatusLine() == null) {
-                return null;
+                throw new BusinessException("请求结果为空");
             }
             //得到状态码
             int statusCode = response.getStatusLine().getStatusCode();
+            String responseString = EntityUtils.toString(response.getEntity());
             //请求成功
             if (statusCode == HttpStatus.SC_OK) {
-                HttpEntity entityResponse = response.getEntity();
-                //将返回结果编码后返回
-                if (entityResponse != null) {
-                    return EntityUtils.toString(entityResponse);
-                }
+                return responseString;
             } else {
-                return null;
+                throw new BusinessException(responseString);
             }
         } catch (IOException e) {
             log.error("get请求发送失败:{}", e.getMessage());
@@ -113,7 +110,6 @@ public class HttpUtils {
                 }
             }
         }
-        return null;
     }
 
     /**
@@ -143,18 +139,15 @@ public class HttpUtils {
         try {
             response = httpClient.execute(httpPost);
             if (response == null || response.getStatusLine() == null) {
-                return null;
+                throw new BusinessException("请求结果为空");
             }
             int statusCode = response.getStatusLine().getStatusCode();
-            HttpEntity entityRes = response.getEntity();
+            String responseString = EntityUtils.toString(response.getEntity());
             if (statusCode == HttpStatus.SC_OK) {
-                if (entityRes != null) {
-                    return EntityUtils.toString(entityRes, "UTF-8");
-                }
+                return responseString;
             } else {
-                log.warn("{}", EntityUtils.toString(entityRes, "UTF-8"));
+                throw new BusinessException(responseString);
             }
-            throw new BusinessException("post请求发送失败:" + statusCode);
         } catch (IOException e) {
             log.warn("post请求发送失败:{}", e.getMessage());
             throw new BusinessException("post请求发送失败:" + e.getMessage());
@@ -180,7 +173,7 @@ public class HttpUtils {
                 pairList.add(pair);
             }
         }
-        return new UrlEncodedFormEntity(pairList, Charset.forName("UTF-8"));
+        return new UrlEncodedFormEntity(pairList, StandardCharsets.UTF_8);
     }
 
     /**
@@ -198,7 +191,7 @@ public class HttpUtils {
                 ch = '?';
                 first = false;
             }
-            if (entry.getKey() == null) {
+            if (entry.getKey() == null || entry.getValue() == null) {
                 continue;
             }
             String value = entry.getValue().toString();
@@ -246,11 +239,12 @@ public class HttpUtils {
             post.setEntity(s);
             HttpResponse res = httpClient.execute(post);
             int statusCode = res.getStatusLine().getStatusCode();
+            String responseString = EntityUtils.toString(res.getEntity());
             if (statusCode == HttpStatus.SC_OK) {
-                return EntityUtils.toString(res.getEntity());
+                return responseString;
             } else {
-                log.warn("{} {}", statusCode, res.getEntity());
-                throw new BusinessException(statusCode + " " + res.getEntity());
+                log.warn("{} {}", statusCode, responseString);
+                throw new BusinessException(statusCode + " " + responseString);
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
