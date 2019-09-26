@@ -1,4 +1,8 @@
 pipeline {
+  environment {
+    projectName = 'common'
+    gitUrl = 'https://github.com/pengfanglin'
+  }
   agent any
   stages {
     stage('prepare-test') {
@@ -33,9 +37,5 @@ pipeline {
         sh 'gradle build publishMavenPublicationToNexusRepository -Penv=pro -x test --refresh-dependencies'
       }
     }
-  }
-  environment {
-    projectName = 'common'
-    gitUrl = 'https://github.com/pengfanglin'
   }
 }
