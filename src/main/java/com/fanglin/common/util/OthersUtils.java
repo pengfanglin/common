@@ -51,6 +51,22 @@ public class OthersUtils {
     }
 
     /**
+     * 逗号分隔字符串去重
+     *
+     * @param string
+     * @return
+     */
+    public static String distinct(String string) {
+        if (string == null) {
+            return "";
+        }
+        String[] split = string.split(",");
+        Set<String> set = new HashSet<>(split.length);
+        set.addAll(Arrays.asList(split));
+        return String.join(",", set);
+    }
+
+    /**
      * 对象序列化为二进制
      *
      * @param data
