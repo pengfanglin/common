@@ -57,7 +57,7 @@ public class OthersUtils {
      * @return
      */
     public static String distinct(String string) {
-        if (string == null) {
+        if (isEmpty(string)) {
             return "";
         }
         String[] split = string.split(",");
